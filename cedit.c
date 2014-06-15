@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
 		if (ev.key == TB_KEY_CTRL_C)      { cmd_del();           break;}
 		if (ev.key == TB_KEY_BACKSPACE2 ) {
 			if(0 < CMD->cur)          { cmd_input_del();}	 break;}
+		if (ev.key == TB_KEY_CTRL_R)      { draw_all();          break;}
 		if (ev.ch != 0){ cmd_input_add(ev.ch);}                  break;
 		} else {
 		////////////////////////////CLOSE///////////////////////////////
