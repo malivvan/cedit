@@ -16,6 +16,9 @@ size_t misc_utf8_bytepos(char *buf, size_t pos)//REVIEWED
 /*
  * calculates display position of position in a line
  */
+
+ // TODO: converting to utf-8 is useless - if len==1 and cursor is pointing
+ //       to \t the outcome is the same
 size_t misc_dispos(Line *line, size_t pos)
 {
 	char buf[6];

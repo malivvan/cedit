@@ -166,49 +166,34 @@ void core_down()
  */
 void core_change_line(Line *line)
 {
+	size_t i;
 	size_t len;
-	size_t pc;
-	size_t cc;
-	size_t cd;
-	size_t bc;
-	size_t tc;
+	size_t vcnt;
+	size_t bcnt;
+	size_t tpos;
+	size_t vpos_cur;
 
-	cc = 0;
-	bc = 0;
-	tc = TABSIZE;
-	for(pc = 0; bc < CF->cur->l->blen && pc < CF->cur->p; pc++){
-		len = tb_utf8_char_length(CF->cur->l->c[bc]);
-		if(len == 1 && CF->cur->l->c[bc] == '\t'){
-			cc += tc;
-			tc = 0;
+	vpos_cur = misc_dispos(CF->cur->l, CF->cur->p);
+
+	vcnt = 0;
+	bcnt = 0;
+	tpos = TABSIZE;
+	for(i = 0; bcnt < line->blen; i++){
+		len = tb_utf8_char_length(line->c[bcnt]);
+		if(len == 1 && line->c[bcnt] == '\t'){
+			if(vcnt + tpos > vpos_cur) break;
+			vcnt += tpos;
+			tpos = 0;
 		} else {
-			tc--;
-			cc++;
+			if(vcnt + 1 > vpos_cur) break;
+			tpos--;
+			vcnt++;
 		}
-		bc += len;
-		if(tc == 0) tc = TABSIZE;
+		bcnt += len;
+		if(tpos == 0) tpos = TABSIZE;
 	}
-
-	cd = 0;
-	bc = 0;
-	tc = TABSIZE;
-	for(pc = 0; bc < line->blen; pc++){
-		len = tb_utf8_char_length(line->c[bc]);
-		if(len == 1 && line->c[bc] == '\t'){
-			if(cd + tc > cc) break;
-			cd += tc;
-			tc = 0;
-		} else {
-			if(cd + 1 > cc) break;
-			tc--;
-			cd++;
-		}
-		bc += len;
-		if(tc == 0) tc = TABSIZE;
-	}
-
 	CF->cur->l = line;
-	CF->cur->p = pc;
+	CF->cur->p = i;
 }
 
 /*
