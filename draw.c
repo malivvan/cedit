@@ -248,18 +248,28 @@ void draw_cmd()
  */
 void draw_info(char *msg)
 {
-	size_t c;
-	size_t h;
+	char buf[6];
+	uint32_t chr;
+	size_t len;
 
-	h = tb_height()-1;
+	size_t i;
+	size_t pos;
+	size_t bcnt;
 
-	for(c = 0; c < tb_width(); c++) {
-		if(c < strlen(msg)){
-			tb_change_cell(c,h,msg[c],TB_BLACK,TB_WHITE);
-		} else {
-			tb_change_cell(c,h,' ',TB_BLACK,TB_WHITE);
-		}
+	bcnt = 0;
+	pos = 0;
+	i=0;
+
+	while(bcnt < strlen(msg)){
+		len = tb_utf8_char_length(msg[bcnt]);
+		for(i=0; i<len; i++) buf[i]=msg[bcnt+i];
+		tb_utf8_char_to_unicode(&chr, buf);
+		bcnt += len;
+
+		tb_change_cell(pos,h-1,chr,TB_BLACK,TB_WHITE);
+		pos++;
 	}
+	for(i = pos; i < w; i++) tb_change_cell(i,h-1,' ',TB_BLACK,TB_WHITE);
 
 	tb_present();
 }
