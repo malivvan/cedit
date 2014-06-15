@@ -58,6 +58,7 @@ void file_switch(size_t n);
 /*
  * File:        dialog.c
  * Description: dialog functions for easy translation
+ * Reviewed:    15.06.2014
  */
 void dialog_savefile();
 void dialog_savedfile();
@@ -67,6 +68,7 @@ void dialog_openedfile();
 /*
  * File:        misc.c
  * Description: helper functions
+ * Reviewed:    15.06.2014
  */
 size_t misc_utf8_bytepos(char *c, size_t pos);
 size_t misc_dispos(Line *line, size_t pos);
