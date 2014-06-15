@@ -11,7 +11,7 @@ void core_right();
 void core_left();
 void core_up();
 void core_down();
-void core_change_line(Line *line);			// MARKED FOR REWRITE
+void core_change_line(Line *line);
 void core_ensure_cap(Line *line, size_t cap);
 
 /*
@@ -39,7 +39,7 @@ void draw_numbers();
 void draw_buffer();
 void draw_ensure_viewport_cmd();
 void draw_cmd();				// MARKED FOR REVIEW
-void draw_info(char *msg);			// MARKED FOR REVIEW
+void draw_info(char *msg);
 void draw_all();
 
 /*
