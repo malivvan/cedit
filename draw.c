@@ -154,93 +154,56 @@ void draw_buffer()
 	}
 }
 
-// TODO
 void draw_cmd()
 {
-	size_t h;		// height of last line
-	size_t os;		// offset
-	size_t cp;		// cellpos
-	size_t bp;		// bytepos
-	size_t skp;		// skip
-	size_t len;		// byte lenght of current char
-	size_t bc;		// byte counter
-	uint32_t chr;		// utf8 char
-	char buf[6];		// tmp buffer to hold utf8 char
+	char buf[6];
+	uint32_t chr;
+	size_t len;
 
-	// get height
-	h = tb_height()-1;
+	size_t i;
+	size_t pos;
+	size_t skip;
+	size_t bcnt;
 
-	// initialize counter
-	os = 0;
-	bp = 0;
-
-	// write full msg
-	while(bp < strlen(CMD->msg) && os < tb_width()){
-		len = tb_utf8_char_length(CMD->msg[bp]);
-
-		// get all bytes of utf8 char
-		for(bc = 0; bc < len; bc++) {
-			buf[bc] = CMD->msg[bp+bc];
-		}
-
-		// convert to utf8 value
+	/* write msg and a whitespace */
+	pos = 0;
+	bcnt = 0;
+	while(bcnt < strlen(CMD->msg) && pos < w){
+		len = tb_utf8_char_length(CMD->msg[bcnt]);
+		for(i=0; i<len; i++) buf[i]=CMD->msg[bcnt+i];
 		tb_utf8_char_to_unicode(&chr, buf);
-		tb_change_cell(os,h,chr,TB_BLACK,TB_WHITE);
+		bcnt += len;
 
-
-		// raise byte counter
-		bp += len;
-		os++;
+		tb_change_cell(pos,h-1,chr,TB_BLACK,TB_WHITE);
+		pos++;
 	}
+	tb_change_cell(pos,h-1,' ',TB_BLACK,TB_WHITE);
+	pos++;
 
-	// write a single whitespace
-	tb_change_cell(os,h,' ',TB_BLACK,TB_WHITE);
-	os++;
+	/* set cursor */
+	tb_set_cursor(pos+CMD->cur-CMD->anc, h-1);
 
-	// adjust the viewport
-	if((CMD->anc+(w-1)-os)<CMD->cur)CMD->anc +=CMD->cur-(CMD->anc+(w-1)-os);
+	/* adjust viewport*/
+	if((CMD->anc+(w-1)-pos)<CMD->cur)CMD->anc +=CMD->cur-(CMD->anc+(w-1)-pos);
 	if(CMD->anc > CMD->cur)CMD->anc -=CMD->anc-CMD->cur;
 
-	// initialize counter and skip variable
-	cp = 0;
-	bp = 0;
-	skp = CMD->anc;
-
-	// get first byte of possible utf8 char
-	// extract write entire char to a single cell
-	while(bp < CMD->blen && (cp+os) < tb_width()){
-		len = tb_utf8_char_length(CMD->c[bp]);
-
-		// get all bytes of utf8 char
-		for(bc = 0; bc < len; bc++) {
-			buf[bc] = CMD->c[bp+bc];
-		}
-
-		// convert to utf8 value
+	/* output */
+	bcnt = 0;
+	skip = CMD->anc;
+	while(bcnt < CMD->blen && pos < w){
+		len = tb_utf8_char_length(CMD->c[bcnt]);
+		for(i=0; i<len; i++) buf[i]=CMD->c[bcnt+i];
 		tb_utf8_char_to_unicode(&chr, buf);
+		bcnt += len;
 
-		// write into cell
-		if (skp == 0) {
-			tb_change_cell(cp+os,h,chr,TB_BLACK,TB_WHITE);
-			cp++;
+		if (skip == 0) {
+			tb_change_cell(pos,h-1,chr,TB_BLACK,TB_WHITE);
+			pos++;
 		} else {
-			skp--;
+			skip--;
 		}
-
-		// raise byte counter
-		bp += len;
 	}
-
-	// fill rest of line with empty cells
-	while((cp+os) < tb_width()){
-		tb_change_cell(cp+os,h,' ',TB_BLACK,TB_WHITE);
-		cp++;
-	}
-
-	// set cursor
-	tb_set_cursor(os+CMD->cur-CMD->anc, h);
-
-
+	for(i = pos; i < w; i++) tb_change_cell(i,h-1,' ',TB_BLACK,TB_WHITE);
 }
 
 /*
