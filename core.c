@@ -165,17 +165,27 @@ void core_down()
 void core_pageup()
 {
 	size_t i;
-	for(i=0; i < tb_height() && CF->cur->l->prev != 0; i++){
-		CF->cur->l = CF->cur->l->prev;
+	Line *line;
+
+	line = CF->cur->l;
+	for(i=0; i < tb_height() && line->prev != 0; i++){
+		line = line->prev;
 	}
+	core_change_line(line);
+
 	draw_all();
 }
 void core_pagedown()
 {
 	size_t i;
-	for(i=0; i < tb_height() && CF->cur->l->next != 0; i++){
-		CF->cur->l = CF->cur->l->next;
+	Line *line;
+
+	line = CF->cur->l;
+	for(i=0; i < tb_height() && line->next != 0; i++){
+		line = line->next;
 	}
+	core_change_line(line);
+
 	draw_all();
 }
 
