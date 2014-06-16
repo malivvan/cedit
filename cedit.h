@@ -10,6 +10,8 @@ void core_right();
 void core_left();
 void core_up();
 void core_down();
+void core_pageup();
+void core_pagedown();
 void core_change_line(Line *line);
 void core_ensure_cap(Line *line, size_t cap);
 

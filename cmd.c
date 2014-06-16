@@ -3,7 +3,7 @@
 /*
  * creates new Cmd structure and draws it
  */
-void cmd_new(char *msg, char *type)//REVIEWED
+void cmd_new(char *msg, char *type)
 {
 	size_t c;
 	size_t h;
@@ -24,7 +24,7 @@ void cmd_new(char *msg, char *type)//REVIEWED
 /*
  * deletes the current Cmd structure
  */
-void cmd_del()//REVIEWED
+void cmd_del()
 {
 	free(CMD->c);
 	free(CMD);
@@ -35,7 +35,7 @@ void cmd_del()//REVIEWED
 /*
  * executes and deletes the current Cmd structure
  */
-void cmd_exec()//REVIEWED
+void cmd_exec()
 {
 	char *buf;
 	char *type;
@@ -59,7 +59,7 @@ void cmd_exec()//REVIEWED
  * from the right side of the cursor len to the right and writing in the gap
  * aftwards
  */
-void cmd_input_add(uint32_t ch)//REVIEWED
+void cmd_input_add(uint32_t ch)
 {
 	char buf[6];
 	size_t i;
@@ -85,7 +85,7 @@ void cmd_input_add(uint32_t ch)//REVIEWED
  * characters from the right side of the cursor len to the left overwriting the
  * character
  */
-void cmd_input_del()//REVIEWED
+void cmd_input_del()
 {
 	size_t i;
 	size_t len;

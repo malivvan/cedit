@@ -21,13 +21,13 @@
 int main(int argc, char *argv[])
 {
 	int ret;
-	size_t c;
+	size_t i;
 	struct tb_event ev;
 
 	ret = tb_init();
 	if(ret) fprintf(stderr, "tb_init() failed with error code %d\n", ret);
 
-	if(argc > 1) for(c = 1 ; c < argc ; c++) file_open(argv[c]);
+	if(argc > 1) for(i = 1 ; i < argc ; i++) file_open(argv[i]);
 	if(CF == 0) file_new();
 
 	file_switch(1);
@@ -62,6 +62,9 @@ int main(int argc, char *argv[])
 		if(ev.key == TB_KEY_CTRL_S) { file_save(0);              break;}
 		if(ev.key == TB_KEY_CTRL_R) { draw_all();                break;}
 		if(ev.key == TB_KEY_CTRL_N) { file_new();                break;}
+		///////////////////////// PAGE UP/DOWN /////////////////////////
+		if(ev.key == TB_KEY_PGUP)   { core_pageup();             break;}
+		if(ev.key == TB_KEY_PGDN)   { core_pagedown();           break;}
 		////////////////////////FILE SWITCHING//////////////////////////
 		if(ev.key == TB_KEY_CTRL_H) { file_switch_left();        break;}
 		if(ev.key == TB_KEY_CTRL_L) { file_switch_right();       break;}
