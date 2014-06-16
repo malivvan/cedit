@@ -68,7 +68,11 @@ void file_open(char *path)
 	}
 
 	fp = fopen(path, "r");
-	if(fp == NULL) return;
+	if(fp == NULL){
+		dialog_openfile_failure();
+		return;
+	}
+
 	file_new();
 
 	CF->path = malloc(strlen(path));
@@ -99,7 +103,7 @@ void file_open(char *path)
 		}
 	}
 	fclose(fp);
-	dialog_openedfile();
+	dialog_openfile_success();
 }
 
 /*
@@ -165,7 +169,10 @@ void file_save(char *path)
 	line = CF->first;
 
 	fp = fopen(CF->path, "w+");
-	if(fp == NULL) return;
+	if(fp == NULL){
+		dialog_savefile_failure();
+		return;
+	}
 
 	while(line != 0) {
 		for(i = 0; i < line->blen; i++){
@@ -176,7 +183,7 @@ void file_save(char *path)
 	}
 
 	fclose(fp);
-	dialog_savedfile();
+	dialog_savefile_success();
 }
 
 /*

@@ -56,9 +56,11 @@ void file_switch(size_t n);
  * Description: dialog functions for easy translation
  */
 void dialog_savefile();
-void dialog_savedfile();
+void dialog_savefile_success();
+void dialog_savefile_failure();
 void dialog_openfile();
-void dialog_openedfile();
+void dialog_openfile_success();
+void dialog_openfile_failure();
 
 /*
  * File:        misc.c
