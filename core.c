@@ -160,6 +160,26 @@ void core_down()
 }
 
 /*
+ * page handling: up and down
+ */
+void core_pageup()
+{
+	size_t i;
+	for(i=0; i < tb_height() && CF->cur->l->prev != 0; i++){
+		CF->cur->l = CF->cur->l->prev;
+	}
+	draw_all();
+}
+void core_pagedown()
+{
+	size_t i;
+	for(i=0; i < tb_height() && CF->cur->l->next != 0; i++){
+		CF->cur->l = CF->cur->l->next;
+	}
+	draw_all();
+}
+
+/*
  * calculate the correct real cursor position depending on displayed cursor
  * position therefore handling tabs correctly
  * sets the new line as current line

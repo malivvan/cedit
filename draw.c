@@ -5,7 +5,7 @@ static size_t w;
 static size_t offset;
 
 /*
- * ensures vertical vieport
+ * ensures vertical viewport
  */
 void draw_ensure_viewport_v()
 {
@@ -31,6 +31,9 @@ void draw_ensure_viewport_v()
 	}
 }
 
+/*
+ * ensures horizontal viewport
+ */
 void draw_ensure_viewport_h()
 {
 	size_t vpos;
@@ -48,7 +51,9 @@ void draw_ensure_viewport_h()
 	if(vpos > (w-offset-1)) CF->anc->p += vpos-(w-offset-1);
 }
 
-
+/*
+ * draws line numbers
+ */
 void draw_numbers()
 {
 	char buf[6];
@@ -82,6 +87,9 @@ void draw_numbers()
 	offset++;
 }
 
+/*
+ * draw buffer
+ */
 void draw_buffer()
 {
 	Line *line;
@@ -154,6 +162,9 @@ void draw_buffer()
 	}
 }
 
+/*
+ * draws interactive command line
+ */
 void draw_cmd()
 {
 	char buf[6];
@@ -237,6 +248,9 @@ void draw_info(char *msg)
 	tb_present();
 }
 
+/*
+ * draws everything
+ */
 void draw_all()
 {
 	h = tb_height();
@@ -250,4 +264,3 @@ void draw_all()
 	if(CMD != 0) draw_cmd();
 	tb_present();
 }
-
