@@ -3,7 +3,7 @@
 /*
  * creates new Cmd structure and draws it
  */
-void cmd_new(char *msg, char *type)
+void cmd_new(char *msg, char *type, char input)
 {
 	size_t c;
 	size_t h;
@@ -13,6 +13,7 @@ void cmd_new(char *msg, char *type)
 	CMD->type = type;
 	CMD->c = malloc(LINESIZE);
 	CMD->mlen = LINESIZE;
+	CMD->input = input;
 	CMD->anc = 0;
 	CMD->cur = 0;
 	CMD->blen = 0;
@@ -39,18 +40,22 @@ void cmd_exec()
 {
 	char *buf;
 	char *type;
+	size_t num;
 
 	type = CMD->type;
 	if(strlen(CMD->c) > 0){
 		buf = malloc(strlen(CMD->c));
 		strncpy(buf, CMD->c, strlen(CMD->c));
+		if(CMD->input == 1) num = atoi(buf);
 	} else {
+		num = 0;
 		buf = 0;
 	}
 
 	cmd_del();
 	if (type == "savefile") file_save(buf);
 	if (type == "openfile") file_open(buf);
+	if (type == "delline")  core_del_lines(num);
 	free(buf);
 }
 

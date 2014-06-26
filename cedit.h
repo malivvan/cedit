@@ -13,13 +13,14 @@ void core_down();
 void core_pageup();
 void core_pagedown();
 void core_change_line(Line *line);
+void core_del_lines(size_t num);
 void core_ensure_cap(Line *line, size_t cap);
 
 /*
  * File:        cmd.c
  * Description: handle dynamic input (like filenames)
  */
-void cmd_new(char *msg, char *type);
+void cmd_new(char *msg, char *type, char input);
 void cmd_del();
 void cmd_exec();
 void cmd_input_add(uint32_t ch);
@@ -63,6 +64,7 @@ void dialog_savefile_failure();
 void dialog_openfile();
 void dialog_openfile_success();
 void dialog_openfile_failure();
+void dialog_delline();
 
 /*
  * File:        misc.c
