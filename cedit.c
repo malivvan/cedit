@@ -45,7 +45,15 @@ int main(int argc, char *argv[])
 		if (ev.key == TB_KEY_BACKSPACE2 ) {
 			if(0 < CMD->cur)          { cmd_input_del();}	 break;}
 		if (ev.key == TB_KEY_CTRL_R)      { draw_all();          break;}
-		if (ev.ch != 0){ cmd_input_add(ev.ch);}                  break;
+		if (ev.ch != 0){
+			if(CMD->input == 0){
+				cmd_input_add(ev.ch);
+			} else {
+				if(ev.ch==48||ev.ch==49||ev.ch==50||ev.ch==51||
+				   ev.ch==52||ev.ch==53||ev.ch==54||ev.ch==55||
+				   ev.ch==56||ev.ch==57) cmd_input_add(ev.ch);
+			}
+		} break;
 		} else {
 		////////////////////////////CLOSE///////////////////////////////
 		if(ev.key == TB_KEY_CTRL_C) {
@@ -58,6 +66,7 @@ int main(int argc, char *argv[])
 			break;
 		}
 		////////////////////////////KEYBINDS////////////////////////////
+		if(ev.key == TB_KEY_CTRL_D) { core_del_lines(0);         break;}
 		if(ev.key == TB_KEY_CTRL_O) { file_open(0);              break;}
 		if(ev.key == TB_KEY_CTRL_S) { file_save(0);              break;}
 		if(ev.key == TB_KEY_CTRL_R) { draw_all();                break;}

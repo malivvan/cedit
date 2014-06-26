@@ -227,6 +227,48 @@ void core_change_line(Line *line)
 }
 
 /*
+ * deletes num lines beginning at cursor position
+ */
+void core_del_lines(size_t num)
+{
+	Line *line;
+	Line *end;
+	size_t i;
+
+	if(num == 0) dialog_delline();
+
+	end = CF->cur->l;
+	for(i=0 ; i < num && end->next!=0; i++) end = end->next;
+
+	if(CF->cur->l == CF->anc->l) {
+		CF->anc->l = end;
+		CF->anc->p = 0;
+	}
+
+	line = CF->cur->l;
+	CF->cur->l = CF->cur->l->prev;
+
+	while(line != end){
+		line = line->next;
+		free(line->prev->c);
+		free(line->prev);
+	}
+
+	line->prev = CF->cur->l;
+
+	if(line->prev != 0) {
+		line->prev->next = line;
+	} else {
+		CF->first = line;
+	}
+
+	CF->cur->l = line;
+	CF->cur->p = 0;
+
+	draw_all();
+}
+
+/*
  * ensures that there are always enough bytes to write new content to
  */
 void core_ensure_cap(Line *line, size_t cap)

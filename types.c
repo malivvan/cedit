@@ -29,6 +29,7 @@ struct Cmd{
 	char *msg;		// message to be displayed
 	char *type;		// type
 	char *c;		// content
+	char input;		// input method 0=full input 1=only numbers
 	size_t cur;		// cursor
 	size_t anc;		// anchor
 	size_t blen;		// byte lenght
