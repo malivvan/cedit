@@ -145,7 +145,7 @@ void draw_buffer()
 			/* output */
 			if(chr == 9){
 				for(i = 0; i < tpos; i++){
-					if(x==80){
+					if(LINEENDMARKER != 0 && x+CF->anc->p == LINEENDMARKER){
 						tb_change_cell(x+offset,y,' ',FG,TB_RED);
 					} else {
 						tb_change_cell(x+offset,y,' ',FG,BG);
@@ -154,7 +154,7 @@ void draw_buffer()
 				}
 				tpos = 0;
 			} else {
-				if(x==80){
+				if(LINEENDMARKER != 0 && x+CF->anc->p == LINEENDMARKER){
 					tb_change_cell(x+offset,y,chr,FG,TB_RED);
 				} else {
 					tb_change_cell(x+offset,y,chr,FG,BG);
