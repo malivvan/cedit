@@ -145,12 +145,20 @@ void draw_buffer()
 			/* output */
 			if(chr == 9){
 				for(i = 0; i < tpos; i++){
-					tb_change_cell(x+offset,y,' ',FG,BG);
+					if(x==80){
+						tb_change_cell(x+offset,y,' ',FG,TB_RED);
+					} else {
+						tb_change_cell(x+offset,y,' ',FG,BG);
+					}
 					x++;
 				}
 				tpos = 0;
 			} else {
-				tb_change_cell(x+offset,y,chr,FG,BG);
+				if(x==80){
+					tb_change_cell(x+offset,y,chr,FG,TB_RED);
+				} else {
+					tb_change_cell(x+offset,y,chr,FG,BG);
+				}
 				tpos--;
 				x++;
 			}
@@ -211,7 +219,7 @@ void draw_cmd()
 			tb_change_cell(pos,h-1,chr,TB_BLACK,TB_WHITE);
 			pos++;
 		} else {
-			skip--;
+			skip--;	
 		}
 	}
 	for(i = pos; i < w; i++) tb_change_cell(i,h-1,' ',TB_BLACK,TB_WHITE);
