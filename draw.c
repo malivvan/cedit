@@ -127,6 +127,9 @@ void draw_buffer()
 			tb_utf8_char_to_unicode(&chr, buf);
 			bcnt += len;
 
+			/* syntax coloring */
+			// TODO HERE
+			
 			/* viewport handling */
 			if(skip > 0){
 				if(chr == 9) {

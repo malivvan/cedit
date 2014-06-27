@@ -66,6 +66,13 @@ void dialog_openfile_success();
 void dialog_openfile_failure();
 void dialog_delline();
 
+/*                                                           
+ * File:        syntax.c                                     
+ * Description: syntax coloring functions        
+ */ 
+int syntax_isStartDelimiter(char chr);
+int syntax_isEndDelimiter(char chr);
+
 /*
  * File:        misc.c
  * Description: helper functions
