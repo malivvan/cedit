@@ -66,12 +66,14 @@ void dialog_openfile_success();
 void dialog_openfile_failure();
 void dialog_delline();
 
-/*                                                           
- * File:        syntax.c                                     
- * Description: syntax coloring functions        
- */ 
+/*
+ * File:        syntax.c
+ * Description: syntax coloring functions
+ */
 int syntax_isStartDelimiter(char chr);
 int syntax_isEndDelimiter(char chr);
+void syntax_ILC(Line *l, size_t bcnt, size_t len);
+void syntax_reset();
 
 /*
  * File:        misc.c
@@ -79,3 +81,4 @@ int syntax_isEndDelimiter(char chr);
  */
 size_t misc_utf8_bytepos(char *c, size_t pos);
 size_t misc_dispos(Line *line, size_t pos);
+char *misc_filetype();
