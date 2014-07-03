@@ -1,4 +1,5 @@
 #include "cedit.h"
+#include "syntax.c"
 
 static size_t h;
 static size_t w;
@@ -108,7 +109,6 @@ void draw_buffer()
 	size_t i;
 
 	line = CF->anc->l;
-
 	for(y = 0; line != 0 && y < h; y++){
 		x = 0;
 		bcnt = 0;
@@ -125,11 +125,13 @@ void draw_buffer()
 			len = tb_utf8_char_length(line->c[bcnt]);
 			for(i=0; i<len; i++) buf[i]=line->c[bcnt+i];
 			tb_utf8_char_to_unicode(&chr, buf);
-			bcnt += len;
 
 			/* syntax coloring */
-			// TODO HERE
-			
+			syntax_all(line, bcnt, len);
+
+			/* raise bcnt by len */
+			bcnt += len;
+
 			/* viewport handling */
 			if(skip > 0){
 				if(chr == 9) {
@@ -222,7 +224,7 @@ void draw_cmd()
 			tb_change_cell(pos,h-1,chr,TB_BLACK,TB_WHITE);
 			pos++;
 		} else {
-			skip--;	
+			skip--;
 		}
 	}
 	for(i = pos; i < w; i++) tb_change_cell(i,h-1,' ',TB_BLACK,TB_WHITE);
@@ -266,6 +268,8 @@ void draw_all()
 {
 	h = tb_height();
 	w = tb_width();
+
+	syntax_reset();
 
 	tb_clear();
 	draw_ensure_viewport_v();

@@ -13,10 +13,10 @@ void file_new()
 	File *file;
 
 	fline = malloc(sizeof(Line));
-	fline->c = malloc(100);
+	fline->c = malloc(LINESIZE);
 	fline->blen = 0;
 	fline->clen = 0;
-	fline->mlen = 100;
+	fline->mlen = LINESIZE;
 	fline->next = 0;
 	fline->prev = 0;
 
@@ -103,6 +103,7 @@ void file_open(char *path)
 		}
 	}
 	fclose(fp);
+	draw_all();
 	dialog_openfile_success();
 }
 
@@ -182,6 +183,7 @@ void file_save(char *path)
 		line = line->next;
 	}
 
+	draw_all();
 	fclose(fp);
 	dialog_savefile_success();
 }

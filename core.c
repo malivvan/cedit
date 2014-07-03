@@ -97,18 +97,14 @@ void core_new_line()
 void core_del_line()
 {
 	Line *line;
-	size_t bpos;
-
 	line = CF->cur->l;
 
 	line->prev->next = line->next;
 	if (line->next != 0) line->next->prev = line->prev;
 
-	bpos = misc_utf8_bytepos(CF->cur->l->c, CF->cur->p);
 	core_ensure_cap(line->prev, line->blen + line->prev->blen);
 
 	CF->cur->p = line->prev->clen;
-
 	strncat(line->prev->c, line->c, line->blen);
 	CF->cur->l = CF->cur->l->prev;
 
