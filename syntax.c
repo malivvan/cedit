@@ -213,6 +213,11 @@ void syntax_QMS(Line *l, size_t bcnt, size_t len)
 	}
 }
 
+void syntax_WORD(Line *l, size_t bcnt, size_t len)
+{
+
+}
+
 
 /*
  * resets the whole syntax system to the defaults
@@ -241,4 +246,5 @@ void syntax_all(Line *line, size_t bcnt, size_t len)
 	syntax_NUM(line, bcnt, len);
 	syntax_QML(line, bcnt, len);
 	syntax_QMS(line, bcnt, len);
+	syntax_WORD(line, bcnt, len);
 }

@@ -274,10 +274,6 @@ void draw_all()
 	h = tb_height();
 	w = tb_width();
 
-	#ifdef SYNTAX
-	syntax_reset();
-	#endif
-
 	tb_clear();
 	draw_ensure_viewport_v();
 	draw_numbers();
