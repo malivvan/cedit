@@ -1,5 +1,8 @@
 #include "cedit.h"
+
+#ifdef SYNTAX
 #include "syntax.c"
+#endif
 
 static size_t h;
 static size_t w;
@@ -127,7 +130,9 @@ void draw_buffer()
 			tb_utf8_char_to_unicode(&chr, buf);
 
 			/* syntax coloring */
+			#ifdef SYNTAX
 			syntax_all(line, bcnt, len);
+			#endif
 
 			/* raise bcnt by len */
 			bcnt += len;
@@ -269,7 +274,9 @@ void draw_all()
 	h = tb_height();
 	w = tb_width();
 
+	#ifdef SYNTAX
 	syntax_reset();
+	#endif
 
 	tb_clear();
 	draw_ensure_viewport_v();

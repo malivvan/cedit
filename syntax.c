@@ -3,9 +3,8 @@
 static size_t delay = 0;
 static size_t BC_lock = 0;
 static size_t ILC_lock = 0;
-
-uint16_t FG = TB_WHITE | TB_BOLD;
-uint16_t BG = TB_BLACK;
+static size_t QML_lock = 0;
+static size_t QMS_lock = 0;
 
 int syntax_isStartDelimiter(char chr)
 {
@@ -36,6 +35,8 @@ void syntax_ILC(Line *l, size_t bcnt, size_t len)
 
 	/* do not do stuff if there is an ongoing blockcomment */
 	if(BC_lock == 1) return;
+	if(QML_lock == 1) return;
+	if(QMS_lock == 1) return;
 
 	/* reset @ every new line because this is an inline comment */
 	if(bcnt == 0) syntax_reset();
@@ -85,6 +86,8 @@ void syntax_BC(Line *l, size_t bcnt, size_t len)
 
 	/* do not do stuff if there is an ongoing inline comment */
 	if(ILC_lock == 1) return;
+	if(QML_lock == 1) return;
+	if(QMS_lock == 1) return;
 
 	/* syntax highlighting depending on filetype */
 	char **bc = 0;
@@ -136,23 +139,14 @@ void syntax_BC(Line *l, size_t bcnt, size_t len)
 	}
 }
 
-/*
- * resets the whole syntax system to the defaults
- */
-void syntax_reset()
-{
-	BC_lock = 0;
-	ILC_lock = 0;
-	FG = TB_WHITE | TB_BOLD;
-	BG = TB_BLACK;
-}
-
 void syntax_NUM(Line *l, size_t bcnt, size_t len)
 {
 	size_t i;
 
 	if(BC_lock == 1) return;
 	if(ILC_lock == 1) return;
+	if(QML_lock == 1) return;
+	if(QMS_lock == 1) return;
 
 	if(isNumber(l->c[bcnt])){
 		/* check front */
@@ -183,15 +177,68 @@ void syntax_NUM(Line *l, size_t bcnt, size_t len)
 	}
 }
 
+/* quotation mark large (") */
+void syntax_QML(Line *l, size_t bcnt, size_t len)
+{
+	size_t i;
+
+	if(BC_lock == 1) return;
+	if(ILC_lock == 1) return;
+
+	if(l->c[bcnt] == 34){
+		if(QML_lock == 1){
+			delay = 1;
+		} else {
+			QML_lock = 1;
+			FG = TB_BLUE | TB_BOLD;
+		}
+	}
+}
+
+/* quotation mark small (') */
+void syntax_QMS(Line *l, size_t bcnt, size_t len)
+{
+	size_t i;
+
+	if(BC_lock == 1) return;
+	if(ILC_lock == 1) return;
+
+	if(l->c[bcnt] == 39){
+		if(QMS_lock == 1){
+			delay = 1;
+		} else {
+			QMS_lock = 1;
+			FG = TB_BLUE | TB_BOLD;
+		}
+	}
+}
+
+
+/*
+ * resets the whole syntax system to the defaults
+ */
+void syntax_reset()
+{
+	BC_lock = 0;
+	ILC_lock = 0;
+	QML_lock = 0;
+	QMS_lock = 0;
+	FG = TB_WHITE | TB_BOLD;
+	BG = TB_BLACK;
+}
+
 /*
  * called from the draw function once every char
  */
 void syntax_all(Line *line, size_t bcnt, size_t len)
 {
 	if(delay == 1) syntax_reset();
-	if(delay > 0) delay--;
+	if(delay > 0)  delay--;
+	if(delay > 0)  return;
 
 	syntax_ILC(line, bcnt, len);
 	syntax_BC(line, bcnt, len);
 	syntax_NUM(line, bcnt, len);
+	syntax_QML(line, bcnt, len);
+	syntax_QMS(line, bcnt, len);
 }
