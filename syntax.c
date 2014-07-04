@@ -218,7 +218,6 @@ void syntax_WORD(Line *l, size_t bcnt, size_t len)
 
 }
 
-
 /*
  * resets the whole syntax system to the defaults
  */
