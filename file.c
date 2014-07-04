@@ -67,7 +67,12 @@ void file_open(char *path)
 		return;
 	}
 
-	fp = fopen(path, "r");
+
+	if(access(path, R_OK) != -1){
+		fp = fopen(path, "r");
+	} else {
+		fp = fopen(path, "w");
+	}
 	if(fp == NULL){
 		dialog_openfile_failure();
 		return;
