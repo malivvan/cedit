@@ -67,7 +67,6 @@ void file_open(char *path)
 		return;
 	}
 
-
 	if(access(path, R_OK) != -1){
 		fp = fopen(path, "r");
 	} else {
