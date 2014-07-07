@@ -132,7 +132,7 @@ void syntax_QM(Line *l, size_t bcnt, size_t len)
 	for(i = 1; bcnt+i <= l->blen; i += tb_utf8_char_length(l->c[bcnt+i])){
 		d++;
 		if(l->c[bcnt+i] == c){
-			FG = TB_BLUE | TB_BOLD;
+			FG = SYNTAX_QM;
 			delay = d;
 		}
 	}
@@ -169,7 +169,7 @@ void syntax_NUM(Line *l, size_t bcnt, size_t len)
                 }
 
 		/* set FG and a delay */
-		FG = TB_MAGENTA | TB_BOLD;
+		FG = SYNTAX_NUM;
 		delay = i;
 	}
 }
