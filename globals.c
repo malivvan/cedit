@@ -5,3 +5,6 @@ size_t TABSIZE = 8;			// default tab lenght
 size_t LINEENDMARKER = 81;		// default end of line 0 == option disabled
 uint16_t FG = TB_WHITE | TB_BOLD;
 uint16_t BG = TB_BLACK;
+
+uint16_t SYNTAX_TYPE = TB_CYAN | TB_BOLD;
+uint16_t SYNTAX_RES = TB_YELLOW | TB_BOLD;
