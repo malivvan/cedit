@@ -15,10 +15,10 @@ void core_add_char(uint32_t ch)
 
 	line = CF->cur->l;
 	len = tb_utf8_unicode_to_char(buf, ch);
-	bpos = misc_utf8_bytepos(line->c, CF->cur->p);
+	bpos = misc_utf8_bytepos(line->c, CF->cur->p, line->blen);
 	core_ensure_cap(line, line->blen+len);
 
-	for(i = line->blen; i > bpos; i--) line->c[i] = line->c[i-len];
+	for(i = (line->blen-1)+len; i > bpos; i--) line->c[i] = line->c[i-len];
 	for(i = bpos; i < bpos+len ; i++) line->c[i] = buf[i-bpos];
 
 	CF->cur->l->blen += len;
@@ -41,7 +41,7 @@ void core_del_char()
 	size_t bpos;
 
 	line = CF->cur->l;
-	bpos = misc_utf8_bytepos(line->c, CF->cur->p-1);
+	bpos = misc_utf8_bytepos(line->c, CF->cur->p-1, line->blen);
 	len = tb_utf8_char_length(line->c[bpos]);
 
 	for(i = bpos; i < line->blen; i++) line->c[i] = line->c[i+len];
@@ -63,7 +63,7 @@ void core_new_line()
 	size_t i;
 	size_t bpos;
 
-	bpos = misc_utf8_bytepos(CF->cur->l->c, CF->cur->p);
+	bpos = misc_utf8_bytepos(CF->cur->l->c, CF->cur->p, CF->cur->l->blen);
 
 	line = malloc(sizeof(Line));
 	line->c = malloc(LINESIZE);

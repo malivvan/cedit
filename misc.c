@@ -3,13 +3,15 @@
 /*
  * calculates the byteposition of a single character in an utf-8 char array
  */
-size_t misc_utf8_bytepos(char *buf, size_t pos)
+size_t misc_utf8_bytepos(char *buf, size_t pos, size_t blen)
 {
 	size_t i;
 	size_t bpos;
 
 	bpos = 0;
-	for(i=0;i<pos&&buf[bpos]!=0;i++) bpos += tb_utf8_char_length(buf[bpos]);
+	for(i = 0; i<pos && bpos <= blen ; i++){
+		bpos += tb_utf8_char_length(buf[bpos]);
+	}
 	return bpos;
 }
 
@@ -89,4 +91,11 @@ size_t isLetter(char c)
 	return 0;
 }
 
+size_t isSpecial(char c)
+{
+	if((32  <= c && c <= 47 ) || (58  <= c && c <= 64 )||
+	   (91  <= c && c <= 96 ) || (123 <= c && c <= 126)||
+	   (c == 9)) return 1;
+	return 0;
+}
 

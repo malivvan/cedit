@@ -6,23 +6,6 @@ static size_t ILC_lock = 0;
 static size_t QML_lock = 0;
 static size_t QMS_lock = 0;
 
-int syntax_isStartDelimiter(char chr)
-{
-	if(chr == ' ' || chr == '(' || chr == ';') return 1;
-	return 0;
-}
-
-int syntax_isEndDelimiter(char chr)
-{
-	if(chr == ' ' || chr == ')') return 1;
-	return 0;
-}
-int syntax_isQut(uint32_t chr)
-{
-	if(chr == 34 || chr == 39) return 1;
-	return 0;
-}
-
 /*
  * decides if there is an inline comment or not
  */
@@ -139,6 +122,38 @@ void syntax_BC(Line *l, size_t bcnt, size_t len)
 	}
 }
 
+/* quotation mark large (") */
+void syntax_QML(Line *l, size_t bcnt, size_t len)
+{
+	size_t i;
+
+	if(BC_lock == 1) return;
+	if(ILC_lock == 1) return;
+
+	if(l->c[bcnt] == 34){
+		if(QML_lock == 1){
+			delay = 1;
+		} else {
+			QML_lock = 1;
+			FG = TB_BLUE | TB_BOLD;
+		}
+	}
+}
+
+/* quotation mark small (') */
+void syntax_QMS(Line *l, size_t bcnt, size_t len)
+{
+	size_t i;
+	if(l->c[bcnt] == 39){
+		for(i = 1; bcnt+i <= l->blen; i += tb_utf8_char_length(l->c[bcnt+i])){
+			if(l->c[bcnt+i] == 39){
+				FG = TB_BLUE | TB_BOLD;
+				delay = i;
+			}
+		}
+	}
+}
+
 void syntax_NUM(Line *l, size_t bcnt, size_t len)
 {
 	size_t i;
@@ -177,45 +192,50 @@ void syntax_NUM(Line *l, size_t bcnt, size_t len)
 	}
 }
 
-/* quotation mark large (") */
-void syntax_QML(Line *l, size_t bcnt, size_t len)
+/* for type like int, size_t etc.*/
+void syntax_TYPE(Line *l, size_t bcnt, size_t len)
 {
 	size_t i;
+	size_t x;
+	size_t isType;
+	char *ftype;
 
-	if(BC_lock == 1) return;
-	if(ILC_lock == 1) return;
+	/* syntax highlighting depending on filetype */
+	char **type = 0;
+	char *type_c[11]   =   {"signed", "unsigned","char","short", "int"
+		                "long", "float", "double", "void", "size_t", 0};
+	char *type_go[3]  =    {"aa", "bbb", 0};
+	ftype = misc_filetype();
+	if(ftype == 0){
+		return;
+	} else {
+		if(strcmp(ftype, "c" ) == 0)        type = type_c;
+		if(strcmp(ftype, "go") == 0)        type = type_go;
+		free(ftype);
+	}
+	if(type == 0) return;
 
-	if(l->c[bcnt] == 34){
-		if(QML_lock == 1){
-			delay = 1;
-		} else {
-			QML_lock = 1;
-			FG = TB_BLUE | TB_BOLD;
+	for(x = 0; type[x] != 0; x++){
+		isType = 1;
+		if(bcnt + strlen(type[x]) <= l->blen){
+			for(i = 0; i < strlen(type[x]); i++){
+				if(l->c[bcnt+i] != type[x][i]){
+					isType = 0;
+					break;
+				}
+				if(i == strlen(type[x])-1 && isType){
+					if(bcnt!=0 &&
+					   !isSpecial(l->c[bcnt-1]))  return;
+					if(bcnt+i+1 < l->blen &&
+					   !isSpecial(l->c[bcnt+i+1]))return;
+
+					FG = TB_CYAN | TB_BOLD;
+					delay = i+1;
+					return;
+				}
+			}
 		}
 	}
-}
-
-/* quotation mark small (') */
-void syntax_QMS(Line *l, size_t bcnt, size_t len)
-{
-	size_t i;
-
-	if(BC_lock == 1) return;
-	if(ILC_lock == 1) return;
-
-	if(l->c[bcnt] == 39){
-		if(QMS_lock == 1){
-			delay = 1;
-		} else {
-			QMS_lock = 1;
-			FG = TB_BLUE | TB_BOLD;
-		}
-	}
-}
-
-void syntax_WORD(Line *l, size_t bcnt, size_t len)
-{
-
 }
 
 /*
@@ -237,13 +257,15 @@ void syntax_reset()
 void syntax_all(Line *line, size_t bcnt, size_t len)
 {
 	if(delay == 1) syntax_reset();
-	if(delay > 0)  delay--;
-	if(delay > 0)  return;
+	if(delay > 0) delay--;
+	if(delay > 0) return;
+
+
 
 	syntax_ILC(line, bcnt, len);
 	syntax_BC(line, bcnt, len);
 	syntax_NUM(line, bcnt, len);
 	syntax_QML(line, bcnt, len);
 	syntax_QMS(line, bcnt, len);
-	syntax_WORD(line, bcnt, len);
+	syntax_TYPE(line, bcnt, len);
 }

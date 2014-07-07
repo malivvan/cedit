@@ -79,6 +79,6 @@ void syntax_reset();
  * File:        misc.c
  * Description: helper functions
  */
-size_t misc_utf8_bytepos(char *c, size_t pos);
+size_t misc_utf8_bytepos(char *buf, size_t pos, size_t blen);
 size_t misc_dispos(Line *line, size_t pos);
 char *misc_filetype();
