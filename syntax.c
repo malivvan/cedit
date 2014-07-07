@@ -182,7 +182,8 @@ void syntax_WORD(Line *l, size_t bcnt, size_t len)
 {
 	size_t i;
 	size_t x;
-	size_t isType;
+	size_t r;
+	size_t isWord;
 	char *ftype;
 
 	/* type will hold datatypes, res(erved) will hold reserved words and
@@ -211,28 +212,34 @@ void syntax_WORD(Line *l, size_t bcnt, size_t len)
 	}
 	if(type == 0 || res == 0) return;
 
+	/* run two times 0 == type and 1 == reserved */
+	for(r = 0; r < 2; r++) {
+	if(r == 0) word = type;
+	if(r == 1) word = res;
+
 	/* detect words and highlight them if they match */
-	for(x = 0; type[x] != 0; x++){
-		isType = 1;
-		if(bcnt + strlen(type[x]) <= l->blen){
-			for(i = 0; i < strlen(type[x]); i++){
-				if(l->c[bcnt+i] != type[x][i]){
-					isType = 0;
+	for(x = 0; word[x] != 0; x++){
+		isWord = 1;
+		if(bcnt + strlen(word[x]) <= l->blen){
+			for(i = 0; i < strlen(word[x]); i++){
+				if(l->c[bcnt+i] != word[x][i]){
+					isWord = 0;
 					break;
 				}
-				if(i == strlen(type[x])-1 && isType){
+				if(i == strlen(word[x])-1 && isWord){
 					if(bcnt!=0 &&
 					   !isSpecial(l->c[bcnt-1]))  return;
 					if(bcnt+i+1 < l->blen &&
 					   !isSpecial(l->c[bcnt+i+1]))return;
 
-					FG = TB_CYAN | TB_BOLD;
+					if(r == 0) FG = SYNTAX_TYPE;
+					if(r == 1) FG = SYNTAX_RES;
 					delay = i+1;
 					return;
 				}
 			}
 		}
-	}
+	}}
 }
 
 /*
