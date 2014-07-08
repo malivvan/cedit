@@ -4,7 +4,6 @@ static size_t delay = 0;
 static size_t BC_lock = 0;
 static size_t ILC_lock = 0;
 
-
 /*
  * decides if there is an inline comment or not
  */
@@ -20,8 +19,6 @@ void syntax_ILC(Line *l, size_t bcnt, size_t len)
 
 	/* syntax highlighting depending on filetype */
 	char **ilc = 0;
-	char *ilc_c[2]   = {"//", 0};
-	char *ilc_go[3]  = {"aa", "bbb", 0};
 	ftype = misc_filetype();
 	if(ftype == 0){
 		return;
@@ -42,7 +39,7 @@ void syntax_ILC(Line *l, size_t bcnt, size_t len)
 					break;
 				}
 				if(i == strlen(ilc[x])-1 && isILC){
-					FG = TB_WHITE;
+					FG = SYNTAX_ILC;
 					ILC_lock = 1;
 					return;
 				}
@@ -63,8 +60,6 @@ void syntax_BC(Line *l, size_t bcnt, size_t len)
 
 	/* syntax highlighting depending on filetype */
 	char **bc = 0;
-	char *bc_c[3]   =      {"/*", "*/", 0};
-	char *bc_go[3]  =      {"aa", "bbb", 0};
 	ftype = misc_filetype();
 	if(ftype == 0){
 		return;
@@ -93,7 +88,7 @@ void syntax_BC(Line *l, size_t bcnt, size_t len)
 				}
 			}
 		/* opening braces */
-		} else {
+		} else if(BC_lock == 0) {
 			if(bcnt + strlen(bc[x]) <= l->blen){
 				for(i = 0; i < strlen(bc[x]); i++){
 					if(l->c[bcnt+i] != bc[x][i]){
@@ -101,7 +96,7 @@ void syntax_BC(Line *l, size_t bcnt, size_t len)
 						break;
 					}
 					if(i == strlen(bc[x])-1 && isBC){
-						FG = TB_WHITE;
+						FG = SYNTAX_BC;
 						BC_lock = 1;
 						return;
 					}
@@ -110,9 +105,6 @@ void syntax_BC(Line *l, size_t bcnt, size_t len)
 		}
 	}
 }
-
-
-
 
 /*
  * if quotation is detected count the utf8 chars until the next quotation mark
@@ -150,9 +142,9 @@ void syntax_NUM(Line *l, size_t bcnt, size_t len)
 		if(bcnt != 0){
 			if(!((32  <= l->c[bcnt-1] && l->c[bcnt-1] <= 47 )||
 			     (58  <= l->c[bcnt-1] && l->c[bcnt-1] <= 64 )||
-	                     (91  <= l->c[bcnt-1] && l->c[bcnt-1] <= 96 )||
+	                     (91  <= l->c[bcnt-1] && l->c[bcnt-1] <= 94 )||
 	                     (123 <= l->c[bcnt-1] && l->c[bcnt-1] <= 126)||
-	                     (l->c[bcnt-1] == 95))) return;
+	                     (l->c[bcnt-1] == 96))) return;
 	        }
 
 		/* break if a non-number was found */
@@ -163,9 +155,9 @@ void syntax_NUM(Line *l, size_t bcnt, size_t len)
 		/* check back */
 		if(bcnt+i < l->blen){
 			if(!((32  <= l->c[bcnt+i] && l->c[bcnt+i] <= 64 )||
-			     (91  <= l->c[bcnt+i] && l->c[bcnt+i] <= 96 )||
+			     (91  <= l->c[bcnt+i] && l->c[bcnt+i] <= 94 )||
                              (123 <= l->c[bcnt+i] && l->c[bcnt+i] <= 126)||
-                             (l->c[bcnt+i] == 95))) return;
+                             (l->c[bcnt+i] == 96))) return;
                 }
 
 		/* set FG and a delay */
@@ -176,7 +168,8 @@ void syntax_NUM(Line *l, size_t bcnt, size_t len)
 
 /*
  * parses every word, decides if it is a type or a reserved word and
- * hightlights it
+ * hightlights it - does not care about utf8 at all which will be no problem
+ * as types and reserved words are ASCII
  */
 void syntax_WORD(Line *l, size_t bcnt, size_t len)
 {
@@ -191,15 +184,6 @@ void syntax_WORD(Line *l, size_t bcnt, size_t len)
 	char **word;
 	char **type = 0;
 	char **res = 0;
-
-	/* .c */
-	char *res_c[2]     =   {"break", 0};
-	char *type_c[11]   =   {"signed", "unsigned","char","short", "int"
-		                "long", "float", "double", "void", "size_t", 0};
-
-	/* .go */
-	char *res_go[2]    =   {"break", 0};
-	char *type_go[3]   =   {"aa", "bbb", 0};
 
 	/* decide which words to highlight depending on filetype */
 	ftype = misc_filetype();
