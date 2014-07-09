@@ -8,11 +8,11 @@ uint16_t BG = TB_BLACK;
 /* .c */
 char *bc_c[3]     = {"/*", "*/", 0};
 char *ilc_c[2]    = {"//", 0};
-char *res_c[26]   = {"for", "break", "case", "continue", "default", "do",
+char *res_c[27]   = {"for", "break", "case", "continue", "default", "do",
 	             "else", "entry", "for", "goto", "return", "sizeof",
 	             "struct", "switch", "while", "auto", "extern", "register",
 	             "static", "typedef", "union", "#include", "#define",
-	             "#ifdef", "#endif", 0};
+	             "#ifdef", "#endif", "if", 0};
 char *type_c[11]  = {"signed", "unsigned","char","short", "int", "long",
 	             "float", "double", "void", "size_t", 0};
 
