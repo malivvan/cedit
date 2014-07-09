@@ -4,24 +4,11 @@ Cmd *CMD = 0;
 uint16_t FG = TB_WHITE | TB_BOLD;
 uint16_t BG = TB_BLACK;
 
-size_t LINESIZE = 100;
-size_t TABSIZE = 8;
-size_t LINEENDMARKER = 81;
-
-
 #ifdef SYNTAX
-/* colors */
-uint16_t SYNTAX_BC   = TB_WHITE;
-uint16_t SYNTAX_ILC  = TB_WHITE;
-uint16_t SYNTAX_RES  = TB_YELLOW  | TB_BOLD;
-uint16_t SYNTAX_TYPE = TB_CYAN    | TB_BOLD;
-uint16_t SYNTAX_QM   = TB_BLUE    | TB_BOLD;
-uint16_t SYNTAX_NUM  = TB_MAGENTA | TB_BOLD;
-
 /* .c */
 char *bc_c[3]     = {"/*", "*/", 0};
 char *ilc_c[2]    = {"//", 0};
-char *res_c[26]    = {"for", "break", "case", "continue", "default", "do",
+char *res_c[26]   = {"for", "break", "case", "continue", "default", "do",
 	             "else", "entry", "for", "goto", "return", "sizeof",
 	             "struct", "switch", "while", "auto", "extern", "register",
 	             "static", "typedef", "union", "#include", "#define",

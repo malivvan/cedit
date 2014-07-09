@@ -7,44 +7,15 @@
  */
 void file_new()
 {
-	Line *fline;
-	Filepos *cur;
-	Filepos *anc;
 	File *file;
-
-	fline = malloc(sizeof(Line));
-	fline->c = malloc(LINESIZE);
-	fline->blen = 0;
-	fline->clen = 0;
-	fline->mlen = LINESIZE;
-	fline->next = 0;
-	fline->prev = 0;
-
-	cur = malloc(sizeof(Filepos));
-	cur->l = fline;
-	cur->p = 0;
-
-	anc = malloc(sizeof(Filepos));
-	anc->l = fline;
-	anc->p = 0;
-
-	file = malloc(sizeof(File));
-	file->first = fline;
-	file->cur = cur;
-	file->anc = anc;
-	file->path = 0;
-	file->next = 0;
-	file->prev = 0;
+	file = newFile();
 
 	if(CF == 0) {
 		CF = file;
 	} else {
-		if(file->next != 0){
-			file->next = CF->next;
-			file->next->prev = file;
-		}
-		file->prev = CF;
+		while(CF->next != 0) CF = CF->next;
 		CF->next = file;
+		file->prev = CF;
 		CF = CF->next;
 	}
 
@@ -96,12 +67,7 @@ void file_open(char *path)
 			}
 			line->clen += 1;
 		} else if((ch = fgetc(fp)) != EOF){
-			line->next = malloc(sizeof(Line));
-			line->next->c = malloc(LINESIZE);
-			line->next->blen = 0;
-			line->next->clen = 0;
-			line->next->mlen = LINESIZE;
-			line->next->next = 0;
+			line->next = newLine();
 			line->next->prev = line;
 			line = line->next;
 		}
