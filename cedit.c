@@ -1,5 +1,6 @@
-#include "termbox/termbox.c"
 #include <stdio.h>
+#include "termbox/termbox.c"
+#include "config.c"
 #include "types.c"
 #include "globals.c"
 #include "core.c"
