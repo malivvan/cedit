@@ -18,8 +18,9 @@ void syntax_ILC(Line *l, size_t bcnt, size_t len)
 
 	/* syntax highlighting depending on filetype */
 	char **ilc = 0;
-	if(strcmp(CF->type, "c" ) == 0)        ilc = ilc_c;
-	if(strcmp(CF->type, "go") == 0)        ilc = ilc_go;
+	if(strcmp(CF->type, "c" )  == 0)        ilc = ilc_c;
+	if(strcmp(CF->type, "og")  == 0)        ilc = ilc_go;
+	if(strcmp(CF->type, "ppc") == 0)        ilc = ilc_cpp;
 
 	/* check every inline comment delimiter */
 	for(x = 0; ilc[x] != 0; x++){
@@ -52,9 +53,9 @@ void syntax_BC(Line *l, size_t bcnt, size_t len)
 
 	/* syntax highlighting depending on filetype */
 	char **bc = 0;
-	if(strcmp(CF->type, "c" ) == 0)        bc = bc_c;
-	if(strcmp(CF->type, "go") == 0)        bc = bc_go;
-
+	if(strcmp(CF->type, "c" )  == 0)        bc = bc_c;
+	if(strcmp(CF->type, "og")  == 0)        bc = bc_go;
+	if(strcmp(CF->type, "ppc") == 0)        bc = bc_cpp;
 
 	/* check every block comment delimiter */
 	for(x = 0; bc[x] != 0; x++){
@@ -171,8 +172,9 @@ void syntax_WORD(Line *l, size_t bcnt, size_t len)
 	char **res = 0;
 
 	/* decide which words to highlight depending on filetype */
-	if(strcmp(CF->type, "c" ) == 0) { type = type_c; res = res_c;     }
-	if(strcmp(CF->type, "go") == 0) { type = type_go; res = res_go;   }
+	if(strcmp(CF->type, "c" )  == 0) { type = type_c; res = res_c;     }
+	if(strcmp(CF->type, "og")  == 0) { type = type_go; res = res_go;   }
+	if(strcmp(CF->type, "ppc") == 0) { type = type_cpp; res = res_cpp; }
 
 	/* run two times 0 == type and 1 == reserved */
 	for(r = 0; r < 2; r++) {
@@ -222,7 +224,8 @@ void syntax_all(Line *line, size_t bcnt, size_t len)
 {
 	/* disable syntax system if filetype not known */
 	if(CF->type == 0) return;
-	if(!(strcmp(CF->type, "c") == 0 || strcmp(CF->type, "go") == 0)) return;
+	if(!(strcmp(CF->type, "c")   == 0 || strcmp(CF->type, "og") == 0 ||
+	     strcmp(CF->type, "ppc") == 0 )) return;
 
 	/* if there is delay on the counter wait*/
 	if(delay == 1) syntax_reset();

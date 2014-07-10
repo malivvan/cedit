@@ -67,6 +67,7 @@ char *misc_filetype()
 		if(CF->path[i] == '.'){
 			ftype = malloc((len-i));
 			strncpy(ftype, buf, (len-i));
+			printf(ftype);
 			return ftype;
 		}
 		buf[len-i] = CF->path[i];
