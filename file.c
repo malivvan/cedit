@@ -52,6 +52,7 @@ void file_open(char *path)
 
 	CF->path = malloc(strlen(path));
 	strncpy(CF->path, path, strlen(path));
+	CF->type = misc_filetype();
 
 	line = CF->first;
 	ch = fgetc(fp);
@@ -103,6 +104,7 @@ void file_close()
 	free(f->cur);
 	free(f->anc);
 	free(f->path);
+	free(f->type);
 
 	if(f->prev != 0) f->prev->next = f->next;
 	if(f->next != 0) f->next->prev = f->prev;
@@ -130,6 +132,7 @@ void file_save(char *path)
 	if(path != 0 && strlen(path) > 0){
 		CF->path = malloc(strlen(path));
 		strncpy(CF->path, path, strlen(path));
+		CF->type = misc_filetype();
 	}
 
 	if(CF->path == 0) {

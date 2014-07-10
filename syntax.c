@@ -12,22 +12,14 @@ void syntax_ILC(Line *l, size_t bcnt, size_t len)
 	size_t i;
 	size_t x;
 	size_t isILC;
-	char *ftype;
 
 	/* reset @ every new line because this is an inline comment */
 	if(bcnt == 0) syntax_reset();
 
 	/* syntax highlighting depending on filetype */
 	char **ilc = 0;
-	ftype = misc_filetype();
-	if(ftype == 0){
-		return;
-	} else {
-		if(strcmp(ftype, "c" ) == 0)        ilc = ilc_c;
-		if(strcmp(ftype, "go") == 0)        ilc = ilc_go;
-		free(ftype);
-	}
-	if(ilc == 0) return;
+	if(strcmp(CF->type, "c" ) == 0)        ilc = ilc_c;
+	if(strcmp(CF->type, "go") == 0)        ilc = ilc_go;
 
 	/* check every inline comment delimiter */
 	for(x = 0; ilc[x] != 0; x++){
@@ -60,15 +52,9 @@ void syntax_BC(Line *l, size_t bcnt, size_t len)
 
 	/* syntax highlighting depending on filetype */
 	char **bc = 0;
-	ftype = misc_filetype();
-	if(ftype == 0){
-		return;
-	} else {
-		if(strcmp(ftype, "c" ) == 0)        bc = bc_c;
-		if(strcmp(ftype, "go") == 0)        bc = bc_go;
-		free(ftype);
-	}
-	if(bc == 0) return;
+	if(strcmp(CF->type, "c" ) == 0)        bc = bc_c;
+	if(strcmp(CF->type, "go") == 0)        bc = bc_go;
+
 
 	/* check every block comment delimiter */
 	for(x = 0; bc[x] != 0; x++){
@@ -177,7 +163,6 @@ void syntax_WORD(Line *l, size_t bcnt, size_t len)
 	size_t x;
 	size_t r;
 	size_t isWord;
-	char *ftype;
 
 	/* type will hold datatypes, res(erved) will hold reserved words and
 	   word will point to one of them */
@@ -186,15 +171,8 @@ void syntax_WORD(Line *l, size_t bcnt, size_t len)
 	char **res = 0;
 
 	/* decide which words to highlight depending on filetype */
-	ftype = misc_filetype();
-	if(ftype == 0){
-		return;
-	} else {
-		if(strcmp(ftype, "c" ) == 0) { type = type_c; res = res_c;     }
-		if(strcmp(ftype, "go") == 0) { type = type_go; res = res_go;   }
-		free(ftype);
-	}
-	if(type == 0 || res == 0) return;
+	if(strcmp(CF->type, "c" ) == 0) { type = type_c; res = res_c;     }
+	if(strcmp(CF->type, "go") == 0) { type = type_go; res = res_go;   }
 
 	/* run two times 0 == type and 1 == reserved */
 	for(r = 0; r < 2; r++) {
@@ -242,6 +220,10 @@ void syntax_reset()
  */
 void syntax_all(Line *line, size_t bcnt, size_t len)
 {
+	/* disable syntax system if filetype not known */
+	if(!(strcmp(CF->type, "c") || strcmp(CF->type, "go"))) return;
+
+	/* if there is delay on the counter wait*/
 	if(delay == 1) syntax_reset();
 	if(delay > 0) delay--;
 	if(delay > 0) return;
