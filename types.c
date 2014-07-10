@@ -69,6 +69,7 @@ File *newFile()
 	file->next = 0;
 	file->prev = 0;
 	file->path = 0;
+	file->type = 0;
 	return file;
 }
 
