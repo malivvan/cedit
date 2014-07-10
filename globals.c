@@ -16,6 +16,18 @@ char *res_c[27]   = {"for", "break", "case", "continue", "default", "do",
 char *type_c[11]  = {"signed", "unsigned","char","short", "int", "long",
 	             "float", "double", "void", "size_t", 0};
 
+/* .cpp */
+char *bc_cpp[3]   = {"/*", "*/", 0};
+char *ilc_cpp[2]  = {"//", 0};
+char *res_cpp[28] = {"for", "break", "case", "continue", "default", "do",
+	             "else", "entry", "for", "goto", "return", "sizeof",
+	             "struct", "switch", "while", "auto", "extern", "register",
+	             "static", "typedef", "union", "#include", "#define",
+	             "#ifdef", "#endif", "if", "new", 0};
+char *type_cpp[12]= {"signed", "unsigned","char","short", "int", "long",
+	             "float", "double", "void", "size_t", "bool", 0};
+
+
 /* .go */
 char *bc_go[1]    = {0};
 char *ilc_go[1]   = {0};
