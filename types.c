@@ -55,6 +55,7 @@ struct File {
 	File *next;
 	File *prev;
 	char *path;
+	char *type;
 };
 File *newFile()
 {
