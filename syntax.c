@@ -222,7 +222,7 @@ void syntax_all(Line *line, size_t bcnt, size_t len)
 {
 	/* disable syntax system if filetype not known */
 	if(CF->type == 0) return;
-	if(!(strcmp(CF->type, "c") || strcmp(CF->type, "go"))) return;
+	if(!(strcmp(CF->type, "c") == 0 || strcmp(CF->type, "go") == 0)) return;
 
 	/* if there is delay on the counter wait*/
 	if(delay == 1) syntax_reset();
