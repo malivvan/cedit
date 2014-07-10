@@ -221,6 +221,7 @@ void syntax_reset()
 void syntax_all(Line *line, size_t bcnt, size_t len)
 {
 	/* disable syntax system if filetype not known */
+	if(CF->type == 0) return;
 	if(!(strcmp(CF->type, "c") || strcmp(CF->type, "go"))) return;
 
 	/* if there is delay on the counter wait*/
