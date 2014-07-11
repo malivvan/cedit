@@ -16,7 +16,7 @@ Line *newLine()
 	Line *line;
 	line = malloc(sizeof(Line));
 	line->c = malloc(LINESIZE);
-	memset(line->c, 0, LINESIZE);
+	line->c[0] = 0;
 	line->blen = 0;
 	line->clen = 0;
 	line->mlen = LINESIZE;
