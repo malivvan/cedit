@@ -61,7 +61,7 @@ void syntax_BC(Line *l, size_t bcnt, size_t len)
 	for(x = 0; bc[x] != 0; x++){
 		isBC = 1;
 		/* closing braces */
-		if(x % 2 == 1){
+		if(x % 2 == 1 && BC_lock == 1){
 			if(bcnt + strlen(bc[x]) <= l->blen){
 				for(i = 0; i < strlen(bc[x]); i++){
 					if(l->c[bcnt+i] != bc[x][i]){
