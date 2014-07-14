@@ -113,6 +113,7 @@ void syntax_QM(Line *l, size_t bcnt, size_t len)
 		if(l->c[bcnt+i] == c){
 			FG = SYNTAX_QM;
 			delay = d;
+			return;
 		}
 	}
 }
