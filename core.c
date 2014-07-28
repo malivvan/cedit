@@ -73,7 +73,7 @@ void core_new_line()
 	for(i=bpos;i<CF->cur->l->blen;i++) line->c[i-bpos] = CF->cur->l->c[i];
 	for(i=bpos;i<CF->cur->l->mlen;i++) CF->cur->l->c[i] = 0;
 
-	line->blen = strlen(line->c);
+	line->blen = CF->cur->l->blen-bpos;
 	line->clen = CF->cur->l->clen - CF->cur->p;
 	line->next = CF->cur->l->next;
 	line->prev = CF->cur->l;
