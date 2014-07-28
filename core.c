@@ -225,41 +225,62 @@ void core_change_line(Line *line)
 /*
  * deletes num lines beginning at cursor position
  */
-void core_del_lines(size_t num)
+void core_remove_line()
 {
 	Line *line;
-	Line *end;
-	size_t i;
-
-	if(num == 0) dialog_delline();
-
-	end = CF->cur->l;
-	for(i=0 ; i < num && end->next!=0; i++) end = end->next;
-
-	if(CF->cur->l == CF->anc->l) {
-		CF->anc->l = end;
-		CF->anc->p = 0;
-	}
-
 	line = CF->cur->l;
-	CF->cur->l = CF->cur->l->prev;
 
-	while(line != end){
-		line = line->next;
-		free(line->prev->c);
-		free(line->prev);
-	}
+	/* first: delete this line and make next line current line */
+	if(CF->cur->l->next != 0) {
 
-	line->prev = CF->cur->l;
+		/* goto next line */
+		CF->cur->l = CF->cur->l->next;
+		CF->cur->p = 0;
 
-	if(line->prev != 0) {
-		line->prev->next = line;
+		/* correct anchor */
+		if(line == CF->anc->l) CF->anc->l = CF->anc->l->next;
+
+		/* correct firstline */
+		if(line == CF->first) CF->first = CF->first->next;
+
+		/* link lines*/
+		if(line->prev != 0) {
+			line->prev->next = CF->cur->l;
+			line->next->prev = line->prev;
+		} else {
+			line->next->prev = 0;
+		}
+
+		/* free line contents */
+		free(line->c);
+		free(line);
+
+	/* second: delete this line and make prev line current line */
+	} else if(CF->cur->l->prev != 0) {
+
+		/* goto prev line */
+		CF->cur->l = CF->cur->l->prev;
+		CF->cur->p = 0;
+
+		/* correct anchor */
+		if(line == CF->anc->l) CF->anc->l = CF->anc->l->prev;
+
+		/* link lines */
+		line->prev->next = 0;
+
+		/* free line contents */
+		free(line->c);
+		free(line);
+
+	/* delete line content */
 	} else {
-		CF->first = line;
-	}
+		/* reset cursor position */
+		CF->cur->p = 0;
 
-	CF->cur->l = line;
-	CF->cur->p = 0;
+		/* set content counter to zero */
+		CF->cur->l->blen = 0;
+		CF->cur->l->clen = 0;
+	}
 
 	draw_all();
 }

@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 			break;
 		}
 		////////////////////////////KEYBINDS////////////////////////////
-		if(ev.key == TB_KEY_CTRL_D) { core_del_lines(0);         break;}
+		if(ev.key == TB_KEY_CTRL_D) { core_remove_line();        break;}
 		if(ev.key == TB_KEY_CTRL_O) { file_open(0);              break;}
 		if(ev.key == TB_KEY_CTRL_S) { file_save(0);              break;}
 		if(ev.key == TB_KEY_CTRL_R) { draw_all();                break;}

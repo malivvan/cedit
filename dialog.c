@@ -8,5 +8,3 @@ void dialog_openfile()            {cmd_new("open file:", "openfile", 0);}
 void dialog_openfile_success()    {draw_info("file opened");}
 void dialog_openfile_failure()    {draw_info("error opening file");}
 
-void dialog_delline()             {cmd_new("delete line(s):", "delline", 1);}
-
