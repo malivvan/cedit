@@ -55,7 +55,6 @@ void cmd_exec()
 	cmd_del();
 	if (type == "savefile") file_save(buf);
 	if (type == "openfile") file_open(buf);
-	if (type == "delline")  core_del_lines(num);
 	free(buf);
 }
 
