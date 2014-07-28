@@ -18,7 +18,7 @@ void core_add_char(uint32_t ch)
 	bpos = misc_utf8_bytepos(line->c, CF->cur->p, line->blen);
 	core_ensure_cap(line, line->blen+len);
 
-	for(i = (line->blen-1)+len; i > bpos; i--) line->c[i] = line->c[i-len];
+	for(i = (line->blen)+len; i > bpos; i--) line->c[i] = line->c[i-len];
 	for(i = bpos; i < bpos+len ; i++) line->c[i] = buf[i-bpos];
 
 	CF->cur->l->blen += len;
