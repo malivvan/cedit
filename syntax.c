@@ -2,7 +2,6 @@
 
 static size_t delay = 0;
 static size_t BC_lock = 0;
-static size_t ILC_lock = 0;
 
 /*
  * decides if there is an inline comment or not
@@ -11,10 +10,8 @@ void syntax_ILC(Line *l, size_t bcnt, size_t len)
 {
 	size_t i;
 	size_t x;
+	size_t d;
 	size_t isILC;
-
-	/* reset @ every new line because this is an inline comment */
-	if(bcnt == 0) syntax_reset();
 
 	/* syntax highlighting depending on filetype */
 	char **ilc = 0;
@@ -33,7 +30,10 @@ void syntax_ILC(Line *l, size_t bcnt, size_t len)
 				}
 				if(i == strlen(ilc[x])-1 && isILC){
 					FG = SYNTAX_ILC;
-					ILC_lock = 1;
+					for(d = 0; bcnt < l->blen; d++){
+					bcnt += tb_utf8_char_length(l->c[bcnt]);
+					}
+					delay = d;
 					return;
 				}
 			}
@@ -213,7 +213,6 @@ void syntax_WORD(Line *l, size_t bcnt, size_t len)
 void syntax_reset()
 {
 	BC_lock = 0;
-	ILC_lock = 0;
 	FG = TB_WHITE | TB_BOLD;
 	BG = TB_BLACK;
 }
@@ -234,11 +233,11 @@ void syntax_all(Line *line, size_t bcnt, size_t len)
 	if(delay > 0) return;
 
 	/* comments: block and inline comments preclude each other */
-	if(!BC_lock) syntax_ILC(line, bcnt, len);
-	if(!ILC_lock) syntax_BC(line, bcnt, len);
+	syntax_BC(line, bcnt, len);
 
 	/* numbers, quotations and words: only if there is no ongoing comment */
-	if(BC_lock || ILC_lock) return;
+	if(BC_lock) return;
+	syntax_ILC(line, bcnt, len);
 	syntax_QM(line, bcnt, len);
 	syntax_NUM(line, bcnt, len);
 	syntax_WORD(line, bcnt, len);
