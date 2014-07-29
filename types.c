@@ -87,3 +87,19 @@ struct Cmd{
 	size_t clen;		// content lenght
 	size_t mlen;		// lenght of malloced line
 };
+Cmd *newCmd()
+{
+	Cmd *cmd;
+	cmd = malloc(sizeof(Cmd));
+	cmd->msg = 0;
+	cmd->type = 0;
+	cmd->c = malloc(LINESIZE);
+	cmd->c[0] = 0;
+	cmd->input = 0;
+	cmd->cur = 0;
+	cmd->anc = 0;
+	cmd->blen = 0;
+	cmd->clen = 0;
+	cmd->mlen = 0;
+	return cmd;
+}

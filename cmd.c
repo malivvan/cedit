@@ -8,16 +8,10 @@ void cmd_new(char *msg, char *type, char input)
 	size_t c;
 	size_t h;
 
-	CMD = malloc(sizeof(Cmd));
+	CMD = newCmd();
 	CMD->msg = msg;
 	CMD->type = type;
-	CMD->c = malloc(LINESIZE);
-	CMD->mlen = LINESIZE;
 	CMD->input = input;
-	CMD->anc = 0;
-	CMD->cur = 0;
-	CMD->blen = 0;
-	CMD->clen = 0;
 
 	draw_all();
 }
@@ -74,8 +68,8 @@ void cmd_input_add(uint32_t ch)
 	bpos = misc_utf8_bytepos(CMD->c, CMD->cur, CMD->blen);
 	cmd_ensure_cap(CMD->blen+len);
 
-	for(i = CMD->blen; i > bpos; i--)  CMD->c[i] = CMD->c[i-len];
-	for(i = bpos; i < bpos + len; i++) CMD->c[i] = buf[i-bpos];
+	for(i = CMD->blen+len; i >= bpos+len; i--)  CMD->c[i] = CMD->c[i-len];
+	for(i = bpos; i < bpos+len; i++) CMD->c[i] = buf[i-bpos];
 
 	CMD->blen += len;
 	CMD->clen += 1;
