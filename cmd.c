@@ -39,6 +39,7 @@ void cmd_exec()
 	type = CMD->type;
 	if(strlen(CMD->c) > 0){
 		buf = malloc(strlen(CMD->c));
+		buf[0] = '\0';
 		strncpy(buf, CMD->c, strlen(CMD->c));
 		if(CMD->input == 1) num = atoi(buf);
 	} else {
