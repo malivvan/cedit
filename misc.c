@@ -95,8 +95,8 @@ size_t isLetter(char c)
 size_t isSpecial(char c)
 {
 	if((32  <= c && c <= 47 ) || (58  <= c && c <= 64 )||
-	   (91  <= c && c <= 96 ) || (123 <= c && c <= 126)||
-	   (c == 9)) return 1;
+	   (91  <= c && c <= 94 ) || (123 <= c && c <= 126)||
+	   (c == 9) || (c == 96)) return 1;
 	return 0;
 }
 
