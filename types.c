@@ -43,6 +43,23 @@ Filepos *newFilepos()
 }
 
 /*
+ * Selection structure: calling newSelection() will return an empty selection
+ */
+typedef struct Selection Selection;
+struct Selection {
+	Filepos *a;
+	Filepos *b;
+}
+Selection *newSelection()
+{
+	Selection *se;
+	se = malloc(sizeof(Selection));
+	se->a = newFilepos();
+	se->b = newFilepos();
+	return se;
+}
+
+/*
  * File structure: calling newFile() will return a File with an empty Line and
  * a cursor and anchor pointing to the first line. next, prev and path will
  * be zero
