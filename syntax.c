@@ -38,8 +38,9 @@ int syntax_BC(Line *l, size_t bcnt, size_t len)
 					}
 				}
 			}
+		}
 		/* opening braces */
-		} else if(BC_lock == 0) {
+		if(x % 2 == 0 && BC_lock == 0) {
 			if(bcnt + strlen(bc[x]) <= l->blen){
 				for(i = 0; i < strlen(bc[x]); i++){
 					if(l->c[bcnt+i] != bc[x][i]){
@@ -68,8 +69,8 @@ void syntax_BC_open()
         size_t x;
         size_t isBC;
         size_t bcnt;
-        size_t open;
-        size_t close;
+        int open;
+        int close;
 
         /* initialize counters */
         open = 0;
@@ -292,6 +293,9 @@ void syntax_all(Line *line, size_t bcnt, size_t len)
 	if(CF->type == 0) return;
 	if(!(strcmp(CF->type, "c")   == 0 || strcmp(CF->type, "og") == 0 ||
 	     strcmp(CF->type, "ppc") == 0 )) return;
+
+	/* always reset the syntax system on first call  */
+	if(line == CF->anc->l && bcnt == 0) syntax_reset();
 
 	/* if the anchor changed run syntax_BC_open once - set BC accordingly */
 	if(anc != CF->anc->l){
