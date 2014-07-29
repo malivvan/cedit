@@ -70,10 +70,14 @@ void dialog_delline();
  * File:        syntax.c
  * Description: syntax coloring functions
  */
-int syntax_isStartDelimiter(char chr);
-int syntax_isEndDelimiter(char chr);
-void syntax_ILC(Line *l, size_t bcnt, size_t len);
+int  syntax_BC(Line *l, size_t bcnt, size_t len);
+void syntax_BC_open();
+int  syntax_ILC(Line *l, size_t bcnt, size_t len);
+int  syntax_QM(Line *l, size_t bcnt, size_t len);
+int  syntax_NUM(Line *l, size_t bcnt, size_t len);
+int  syntax_WORD(Line *l, size_t bcnt, size_t len);
 void syntax_reset();
+void syntax_all(Line *line, size_t bcnt, size_t len);
 
 /*
  * File:        misc.c
