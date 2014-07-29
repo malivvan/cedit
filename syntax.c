@@ -1,51 +1,14 @@
 #include "cedit.h"
 
+static Line *anc = 0;
 static size_t delay = 0;
 static size_t BC_lock = 0;
-static Line *anc = 0;
-
-/*
- * decides if there is an inline comment or not
- */
-void syntax_ILC(Line *l, size_t bcnt, size_t len)
-{
-	size_t i;
-	size_t x;
-	size_t d;
-	size_t isILC;
-
-	/* syntax highlighting depending on filetype */
-	char **ilc = 0;
-	if(strcmp(CF->type, "c" )  == 0)        ilc = ilc_c;
-	if(strcmp(CF->type, "og")  == 0)        ilc = ilc_go;
-	if(strcmp(CF->type, "ppc") == 0)        ilc = ilc_cpp;
-
-	/* check every inline comment delimiter */
-	for(x = 0; ilc[x] != 0; x++){
-		isILC = 1;
-		if(bcnt + strlen(ilc[x]) <= l->blen){
-			for(i = 0; i < strlen(ilc[x]); i++){
-				if(l->c[bcnt+i] != ilc[x][i]){
-					isILC = 0;
-					break;
-				}
-				if(i == strlen(ilc[x])-1 && isILC){
-					FG = SYNTAX_ILC;
-					for(d = 0; bcnt < l->blen; d++){
-					bcnt += tb_utf8_char_length(l->c[bcnt]);
-					}
-					delay = d;
-					return;
-				}
-			}
-		}
-	}
-}
+static size_t BC_status = 0;
 
 /*
  * decides if there is an block comment or not
  */
-void syntax_BC(Line *l, size_t bcnt, size_t len)
+int syntax_BC(Line *l, size_t bcnt, size_t len)
 {
 	size_t x;
 	size_t i;
@@ -71,7 +34,7 @@ void syntax_BC(Line *l, size_t bcnt, size_t len)
 					}
 					if(i == strlen(bc[x])-1 && isBC){
 						delay = strlen(bc[x]);
-						return;
+						return 1;
 					}
 				}
 			}
@@ -86,16 +49,17 @@ void syntax_BC(Line *l, size_t bcnt, size_t len)
 					if(i == strlen(bc[x])-1 && isBC){
 						FG = SYNTAX_BC;
 						BC_lock = 1;
-						return;
+						return 1;
 					}
 				}
 			}
 		}
 	}
+	return 0;
 }
 
-/* TODO: handle different open close braces
- *       at this point there is no difference
+/*
+ * pre calculates every blockcomment before anchor and saves status
  */
 void syntax_BC_open()
 {
@@ -141,45 +105,89 @@ void syntax_BC_open()
                 /* raise number */
                 l = l->next;
         }
+
+        /* change BC_status accordingly */
         if(open-close > 0){
-                FG=SYNTAX_BC;
-                BC_lock = 1;
-                delay = 0;
-        }
+		BC_status = 1;
+        } else {
+		BC_status = 0;
+	}
+}
+
+/*
+ * decides if there is an inline comment or not
+ */
+int syntax_ILC(Line *l, size_t bcnt, size_t len)
+{
+	size_t i;
+	size_t x;
+	size_t d;
+	size_t isILC;
+
+	/* syntax highlighting depending on filetype */
+	char **ilc = 0;
+	if(strcmp(CF->type, "c" )  == 0)        ilc = ilc_c;
+	if(strcmp(CF->type, "og")  == 0)        ilc = ilc_go;
+	if(strcmp(CF->type, "ppc") == 0)        ilc = ilc_cpp;
+
+	/* check every inline comment delimiter */
+	for(x = 0; ilc[x] != 0; x++){
+		isILC = 1;
+		if(bcnt + strlen(ilc[x]) <= l->blen){
+			for(i = 0; i < strlen(ilc[x]); i++){
+				if(l->c[bcnt+i] != ilc[x][i]){
+					isILC = 0;
+					break;
+				}
+				if(i == strlen(ilc[x])-1 && isILC){
+					FG = SYNTAX_ILC;
+					for(d = 0; bcnt < l->blen; d++){
+					bcnt += tb_utf8_char_length(l->c[bcnt]);
+					}
+					delay = d;
+					return 1;
+				}
+			}
+		}
+	}
+	return 0;
 }
 
 /*
  * if quotation is detected count the utf8 chars until the next quotation mark
  * of the same kind and set the calculated value as delay
  */
-void syntax_QM(Line *l, size_t bcnt, size_t len)
+int syntax_QM(Line *l, size_t bcnt, size_t len)
 {
 	char c;
 	size_t i;
 	size_t d;
 
-	if(l->c[bcnt] != 39 && l->c[bcnt] != 34) return;
+	/* if there is nothing detected just return */
+	if(l->c[bcnt] != 39 && l->c[bcnt] != 34) return 0;
 
+	/* save char and initialize delay var */
 	c = l->c[bcnt];
 	d = 1;
 
+	/* find next quotation mark of same type, set delay and return */
 	for(i = 1; bcnt+i <= l->blen; i += tb_utf8_char_length(l->c[bcnt+i])){
 		d++;
 		if(l->c[bcnt+i] == c){
 			FG = SYNTAX_QM;
 			delay = d;
-			return;
+			return 1;
 		}
 	}
+	return 0;
 }
 
 /*
  * hightlights every number that is not enclosed by invalid chars
  */
-void syntax_NUM(Line *l, size_t bcnt, size_t len)
+int syntax_NUM(Line *l, size_t bcnt, size_t len)
 {
 	size_t i;
-
 	if(isNumber(l->c[bcnt])){
 		/* check front */
 		if(bcnt != 0){
@@ -187,7 +195,7 @@ void syntax_NUM(Line *l, size_t bcnt, size_t len)
 			     (58  <= l->c[bcnt-1] && l->c[bcnt-1] <= 64 )||
 	                     (91  <= l->c[bcnt-1] && l->c[bcnt-1] <= 94 )||
 	                     (123 <= l->c[bcnt-1] && l->c[bcnt-1] <= 126)||
-	                     (l->c[bcnt-1] == 96))) return;
+	                     (l->c[bcnt-1] == 96))) return 0;
 	        }
 
 		/* break if a non-number was found */
@@ -200,13 +208,15 @@ void syntax_NUM(Line *l, size_t bcnt, size_t len)
 			if(!((32  <= l->c[bcnt+i] && l->c[bcnt+i] <= 64 )||
 			     (91  <= l->c[bcnt+i] && l->c[bcnt+i] <= 94 )||
                              (123 <= l->c[bcnt+i] && l->c[bcnt+i] <= 126)||
-                             (l->c[bcnt+i] == 96))) return;
+                             (l->c[bcnt+i] == 96))) return 0;
                 }
 
 		/* set FG and a delay */
 		FG = SYNTAX_NUM;
 		delay = i;
+		return 1;
 	}
+	return 0;
 }
 
 /*
@@ -214,7 +224,7 @@ void syntax_NUM(Line *l, size_t bcnt, size_t len)
  * hightlights it - does not care about utf8 at all which will be no problem
  * as types and reserved words are ASCII
  */
-void syntax_WORD(Line *l, size_t bcnt, size_t len)
+int syntax_WORD(Line *l, size_t bcnt, size_t len)
 {
 	size_t i;
 	size_t x;
@@ -248,18 +258,19 @@ void syntax_WORD(Line *l, size_t bcnt, size_t len)
 				}
 				if(i == strlen(word[x])-1 && isWord){
 					if(bcnt!=0 &&
-					   !isSpecial(l->c[bcnt-1]))  return;
+					   !isSpecial(l->c[bcnt-1]))   return 0;
 					if(bcnt+i+1 < l->blen &&
-					   !isSpecial(l->c[bcnt+i+1]))return;
+					   !isSpecial(l->c[bcnt+i+1])) return 0;
 
 					if(r == 0) FG = SYNTAX_TYPE;
 					if(r == 1) FG = SYNTAX_RES;
 					delay = i+1;
-					return;
+					return 1;
 				}
 			}
 		}
 	}}
+	return 0;
 }
 
 /*
@@ -282,24 +293,26 @@ void syntax_all(Line *line, size_t bcnt, size_t len)
 	if(!(strcmp(CF->type, "c")   == 0 || strcmp(CF->type, "og") == 0 ||
 	     strcmp(CF->type, "ppc") == 0 )) return;
 
-	/* if the anchor changed run syntax_BC_open once */
+	/* if the anchor changed run syntax_BC_open once - set BC accordingly */
 	if(anc != CF->anc->l){
 		anc = CF->anc->l;
 		syntax_BC_open();
 	}
+	if(BC_status == 1 && line == CF->anc->l && bcnt == 0) {
+		FG = SYNTAX_BC;
+                BC_lock = 1;
+                delay = 0;
+	}
 
-	/* if there is delay on the counter wait*/
+	/* if there is delay on the counter wait */
 	if(delay == 1) syntax_reset();
 	if(delay > 0) delay--;
 	if(delay > 0) return;
 
-	/* comments: block and inline comments preclude each other */
-	syntax_BC(line, bcnt, len);
-
-	/* numbers, quotations and words: only if there is no ongoing comment */
-	if(BC_lock) return;
-	syntax_ILC(line, bcnt, len);
-	syntax_QM(line, bcnt, len);
-	syntax_NUM(line, bcnt, len);
-	syntax_WORD(line, bcnt, len);
+	/* highlight everything */
+	if(syntax_BC(line, bcnt, len) || BC_lock) return;
+	if(syntax_ILC(line, bcnt, len)) return;
+	if(syntax_QM(line, bcnt, len)) return;
+	if(syntax_NUM(line, bcnt, len)) return;
+	if(syntax_WORD(line, bcnt, len)) return;
 }
