@@ -2,6 +2,7 @@
 
 static size_t delay = 0;
 static size_t BC_lock = 0;
+static Line *anc = 0;
 
 /*
  * decides if there is an inline comment or not
@@ -91,6 +92,60 @@ void syntax_BC(Line *l, size_t bcnt, size_t len)
 			}
 		}
 	}
+}
+
+/* TODO: handle different open close braces
+ *       at this point there is no difference
+ */
+void syntax_BC_open()
+{
+	Line *l;
+        size_t i;
+        size_t x;
+        size_t isBC;
+        size_t bcnt;
+        size_t open;
+        size_t close;
+
+        /* initialize counters */
+        open = 0;
+        close = 0;
+
+        /* syntax highlighting depending on filetype */
+        char **bc = 0;
+        if(strcmp(CF->type, "c" )  == 0)        bc = bc_c;
+        if(strcmp(CF->type, "og")  == 0)        bc = bc_go;
+        if(strcmp(CF->type, "ppc") == 0)        bc = bc_cpp;
+
+        /* scroll through every utf8 char from first line to anchor */
+        l = CF->first;
+        while(l != CF->anc->l){
+                bcnt = 0;
+                while(bcnt <= l->blen) {
+                        for(x = 0; bc[x] != 0; x++){
+                                isBC = 1;
+                                for(i = 0; i < strlen(bc[x]); i++){
+                                        if(l->c[bcnt+i] != bc[x][i]){
+                                                isBC = 0;
+                                                break;
+                                        }
+                                        if(i == strlen(bc[x])-1 && isBC){
+                                                if(x % 2 == 1) close++;
+                                                if(x % 2 == 0) open++;
+                                        }
+                                }
+                        }
+                        /* raise bcnt */
+                        bcnt += tb_utf8_char_length(l->c[bcnt]);
+                }
+                /* raise number */
+                l = l->next;
+        }
+        if(open-close > 0){
+                FG=SYNTAX_BC;
+                BC_lock = 1;
+                delay = 0;
+        }
 }
 
 /*
@@ -226,6 +281,12 @@ void syntax_all(Line *line, size_t bcnt, size_t len)
 	if(CF->type == 0) return;
 	if(!(strcmp(CF->type, "c")   == 0 || strcmp(CF->type, "og") == 0 ||
 	     strcmp(CF->type, "ppc") == 0 )) return;
+
+	/* if the anchor changed run syntax_BC_open once */
+	if(anc != CF->anc->l){
+		anc = CF->anc->l;
+		syntax_BC_open();
+	}
 
 	/* if there is delay on the counter wait*/
 	if(delay == 1) syntax_reset();
