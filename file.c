@@ -1,9 +1,8 @@
 #include "cedit.h"
 
 /*
- * creates a new empty file as current file - it will be located after the old
- * current file if there is already a open file present - otherwise it will
- * set itself as first file
+ * creates a new empty file as current file - it will be located after the last
+ * file - otherwise it will set itself as first file
  */
 void file_new()
 {

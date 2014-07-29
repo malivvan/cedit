@@ -73,8 +73,6 @@ File *newFile()
 	return file;
 }
 
-
-
 typedef struct Cmd Cmd;
 struct Cmd{
 	char *msg;		// message to be displayed

@@ -13,7 +13,7 @@ void core_down();
 void core_pageup();
 void core_pagedown();
 void core_change_line(Line *line);
-void core_del_lines(size_t num);
+void core_remove_line();
 void core_ensure_cap(Line *line, size_t cap);
 
 /*
@@ -37,7 +37,6 @@ void draw_ensure_viewport_v();
 void draw_ensure_viewport_h();
 void draw_numbers();
 void draw_buffer();
-void draw_ensure_viewport_cmd();
 void draw_cmd();
 void draw_info(char *msg);
 void draw_all();
@@ -64,7 +63,6 @@ void dialog_savefile_failure();
 void dialog_openfile();
 void dialog_openfile_success();
 void dialog_openfile_failure();
-void dialog_delline();
 
 /*
  * File:        syntax.c
@@ -86,3 +84,15 @@ void syntax_all(Line *line, size_t bcnt, size_t len);
 size_t misc_utf8_bytepos(char *buf, size_t pos, size_t blen);
 size_t misc_dispos(Line *line, size_t pos);
 char *misc_filetype();
+size_t isNumber(char c);
+size_t isLetter(char c);
+size_t isSpecial(char c);
+
+/*
+ * File:	types.c
+ * Description:	structs and functions that create them
+ */
+Line *newLine();
+Filepos *newFilepos();
+File *newFile();
+Cmd *newCmd();

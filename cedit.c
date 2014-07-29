@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 		} break;
 		} else {
 		////////////////////////////CLOSE///////////////////////////////
-		if(ev.key == TB_KEY_CTRL_C) {
+		if(ev.key == TB_KEY_CTRL_Q) {
 			file_close();
 			if (CF == 0) {
 				tb_shutdown();
