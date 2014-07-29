@@ -49,7 +49,7 @@ typedef struct Selection Selection;
 struct Selection {
 	Filepos *a;
 	Filepos *b;
-}
+};
 Selection *newSelection()
 {
 	Selection *se;
