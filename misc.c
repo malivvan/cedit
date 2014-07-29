@@ -64,8 +64,9 @@ char *misc_filetype()
 
 	for(i = len; i >= 0; i--){
 		if((len-i) > 9) break;
-		if(CF->path[i] == '.'){
+		if(CF->path[i] == '.' && i != len){
 			ftype = malloc((len-i));
+			ftype[0] = '\0';
 			strncpy(ftype, buf, (len-i));
 			return ftype;
 		}
