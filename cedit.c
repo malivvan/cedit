@@ -8,6 +8,7 @@
 #include "file.c"
 #include "dialog.c"
 #include "misc.c"
+#include "selection.c"
 #include "draw.c"
 #include "cedit.h"
 
@@ -72,6 +73,8 @@ int main(int argc, char *argv[])
 		if(ev.key == TB_KEY_CTRL_S) { file_save(0);              break;}
 		if(ev.key == TB_KEY_CTRL_R) { draw_all();                break;}
 		if(ev.key == TB_KEY_CTRL_N) { file_new();                break;}
+		if(ev.key == TB_KEY_CTRL_A) { selection_new();           break;}
+		if(ev.key == TB_KEY_ESC)    { selection_del();           break;}
 		///////////////////////// PAGE UP/DOWN /////////////////////////
 		if(ev.key == TB_KEY_PGUP)   { core_pageup();             break;}
 		if(ev.key == TB_KEY_PGDN)   { core_pagedown();           break;}
