@@ -73,11 +73,11 @@ int main(int argc, char *argv[])
 		if(ev.key == TB_KEY_CTRL_S) { file_save(0);              break;}
 		if(ev.key == TB_KEY_CTRL_R) { draw_all();                break;}
 		if(ev.key == TB_KEY_CTRL_N) { file_new();                break;}
+		if(ev.key == TB_KEY_CTRL_P) { selection_paste();         break;}
 		///////////////////////SELECTION KEYBINDS///////////////////////
 		if(CF->sel != 0){
 			if(ev.key == TB_KEY_ESC)    { selection_del();   break;}
 			if(ev.key == TB_KEY_CTRL_Y) { selection_copy();  break;}
-			//if(ev.key == TB_KEY_CTRL_X) { selection_cut();   break;}
 		} else {
 			if(ev.key == TB_KEY_CTRL_Y) { selection_new();   break;}
 		}
