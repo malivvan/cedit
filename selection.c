@@ -20,6 +20,19 @@ void selection_del()
 	draw_all();
 }
 
+short selection_open()
+{
+	Line *line;
+
+	line = CF->first;
+	while(line != CF->anc->l){
+		if(line == CF->cur->l) return 1;
+		if(line == CF->sel) return 2;
+		line = line->next;	
+	}
+	return 0;
+}
+
 void selection_paste()
 {
 	size_t i;
