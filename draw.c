@@ -115,7 +115,10 @@ void draw_buffer()
 	
 	/* -2= done -1=delay 0=none 1=cur 2=sel */
 	selstat = selection_open();
-	if(selstat > 0) BG = TB_REVERSE;
+	if(selstat > 0){ 
+		FG = TB_BLACK;
+		BG = TB_WHITE;
+	}
 
 	line = CF->anc->l;
 	for(y = 0; line != 0 && y < h; y++){
@@ -129,12 +132,14 @@ void draw_buffer()
 		if(CF->sel != 0) {
 			/* first -> cur */
 			if(selstat == 0 && CF->cur->l == line){
-				BG = TB_REVERSE;
+				FG = TB_BLACK;
+				BG = TB_WHITE;
 				selstat = 1;
 			}
 			/* first -> sel */
 			if(selstat == 0 && CF->sel == line) {
-				BG = TB_REVERSE;
+				FG = TB_BLACK;
+				BG = TB_WHITE;
 				selstat = 2;
 			}
 			/* cur -> sel */
@@ -159,7 +164,7 @@ void draw_buffer()
 
 			/* syntax coloring */
 			#ifdef SYNTAX
-			if(BG != TB_REVERSE) {
+			if(BG != TB_WHITE) {
 				syntax_all(line, bcnt, len);
 			}
 			#endif
@@ -205,6 +210,7 @@ void draw_buffer()
 		}
 		/* disable selection */
 		if((CF->sel != 0 && selstat == -1) || (y == h-1)){
+			FG = TB_WHITE;
 			BG = TB_BLACK;
 			selstat = -2;
 		}
