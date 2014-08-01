@@ -114,7 +114,8 @@ void draw_buffer()
 	short selstat;
 	
 	/* -2= done -1=delay 0=none 1=cur 2=sel */
-	selstat = 0;
+	selstat = selection_open();
+	if(selstat > 0) BG = TB_REVERSE;
 
 	line = CF->anc->l;
 	for(y = 0; line != 0 && y < h; y++){
@@ -124,7 +125,7 @@ void draw_buffer()
 		tpos = TABSIZE;
 		skip = CF->anc->p;
 
-		/* selection enable */
+		/* selection enabled */
 		if(CF->sel != 0) {
 			/* first -> cur */
 			if(selstat == 0 && CF->cur->l == line){
@@ -203,7 +204,7 @@ void draw_buffer()
 			}
 		}
 		/* disable selection */
-		if(CF->sel != 0 && selstat == -1){
+		if((CF->sel != 0 && selstat == -1) || (y == h-1)){
 			BG = TB_BLACK;
 			selstat = -2;
 		}
