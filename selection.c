@@ -1,7 +1,5 @@
 #include "cedit.h"
 
-Line *clipboard = 0;
-
 /*
  * creates a new selection on current cursor position
  */
@@ -20,6 +18,9 @@ void selection_del()
 	draw_all();
 }
 
+/*
+ * checks if there is a selection open above anchor
+ */
 short selection_open()
 {
 	Line *line;
@@ -28,37 +29,40 @@ short selection_open()
 	while(line != CF->anc->l){
 		if(line == CF->cur->l) return 1;
 		if(line == CF->sel) return 2;
-		line = line->next;	
+		line = line->next;
 	}
 	return 0;
 }
 
+/*
+ * paste clipboard to current file
+ */
 void selection_paste()
 {
 	size_t i;
 	Line *line;
 	Line *cline;
 	Line *end;
-	
-	if(clipboard == 0) return;
+
+	if(CLIP == 0) return;
 
 	line = CF->cur->l;
-	cline = clipboard;
+	cline = CLIP;
 	end = CF->cur->l->next;
-	
+
 	while(cline != 0) {
 
 		/* create newline and ensure linkage  */
 		line->next = newLine();
 		line->next->prev = line;
-		line = line->next;	
+		line = line->next;
 
 		/* ensure cap of line */
 		if(cline->mlen > line->mlen){
 			line->c = realloc(line->c, cline->mlen);
 			line->mlen = cline->mlen;
-		} 
-		
+		}
+
 		/* copy over content and counters */
 		for(i = 0; i <= cline->blen; i++) line->c[i] = cline->c[i];
 		line->blen = cline->blen;
@@ -70,21 +74,25 @@ void selection_paste()
 	/* links lines */
 	line->next = end;
 	if(end != 0) end->prev = line;
-		
+
 	draw_all();
 }
 
+/*
+ * copy content from selection to clipboard, if clipboard not empty free it
+ * first
+ */
 void selection_copy()
 {
 	size_t i;
 	Line *line;
 	Line *cline;
 	short selstat;
-	
+
 	line = CF->first;
 
-	/* if clipboard in use clear */
-	if(clipboard != 0) selection_free_clipboard();
+	/* if CLIP in use clear */
+	if(CLIP != 0) selection_free_clipboard();
 
 	/* 0=none 1=cur 2=sel */
 	selstat = 0;
@@ -102,45 +110,48 @@ void selection_copy()
 				cline->c = realloc(cline->c, line->mlen);
 				cline->mlen = line->mlen;
 			}
-			
+
 			/* copy over content and counters */
 			for(i =0; i <= line->blen; i++) cline->c[i] = line->c[i];
 			cline->blen = line->blen;
 			cline->clen = line->clen;
-			
+
 			/* set to correct position */
-			if(clipboard == 0) {
-				clipboard = cline;
+			if(CLIP == 0) {
+				CLIP = cline;
 			} else {
-				cline->prev = clipboard;
-				clipboard->next = cline;
-				clipboard = clipboard->next;
+				cline->prev = CLIP;
+				CLIP->next = cline;
+				CLIP = CLIP->next;
 			}
 		}
-		
+
 		if(selstat == 1 && line == CF->sel) break;
 		if(selstat == 2 && line == CF->cur->l) break;
 		line = line->next;
 	}
 
-	/* rewind clipboard  */
-	while (clipboard->prev != 0) clipboard = clipboard->prev;
+	/* rewind CLIP  */
+	while (CLIP->prev != 0) CLIP = CLIP->prev;
 
 	/* delete selection */
 	selection_del();
 }
 
+/*
+ * frees current clipboard
+ */
 void selection_free_clipboard()
 {
-	while(clipboard != 0){
-		free(clipboard->c);
-		if(clipboard->next != 0){
-			clipboard = clipboard->next;
-			free(clipboard->prev);	
+	while(CLIP != 0){
+		free(CLIP->c);
+		if(CLIP->next != 0){
+			CLIP = CLIP->next;
+			free(CLIP->prev);
 		} else {
-			free(clipboard);
+			free(CLIP);
 			break;
 		}
 	}
-	clipboard = 0;	
+	CLIP = 0;
 }

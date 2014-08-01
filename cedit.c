@@ -61,6 +61,7 @@ int main(int argc, char *argv[])
 		if(ev.key == TB_KEY_CTRL_C) {
 			file_close();
 			if (CF == 0) {
+				selection_free_clipboard();
 				tb_shutdown();
 				return 0;
 			}
