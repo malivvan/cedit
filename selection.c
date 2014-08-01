@@ -5,9 +5,7 @@
  */
 void selection_new()
 {
-	CF->sel = newFilepos();
-	CF->sel->l = CF->cur->l;
-	CF->sel->p = CF->sel->p;
+	CF->sel = CF->cur->l;
 	draw_all();
 }
 
@@ -16,7 +14,6 @@ void selection_new()
  */
 void selection_del()
 {
-	free(CF->sel);
 	CF->sel = 0;
 	draw_all();
 }
