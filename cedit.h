@@ -89,6 +89,17 @@ size_t isLetter(char c);
 size_t isSpecial(char c);
 
 /*
+ * File:        selection.c
+ * Description: handles line selection and functions like copy/paste etc.
+ */
+void selection_new();
+void selection_del();
+short selection_open();
+void selection_paste();
+void selection_copy();
+void selection_free_clipboard();
+
+/*
  * File:	types.c
  * Description:	structs and functions that create them
  */

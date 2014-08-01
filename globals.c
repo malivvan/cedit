@@ -1,5 +1,6 @@
 File *CF = 0;
 Cmd *CMD = 0;
+Line *CLIP = 0;
 
 uint16_t FG = TB_WHITE | TB_BOLD;
 uint16_t BG = TB_BLACK;
