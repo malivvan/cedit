@@ -73,7 +73,7 @@ void selection_copy()
 	/* if clipboard in use clear */
 	if(clipboard != 0) selection_free_clipboard();
 
-	/* 0=none 1=cur 2=sel 3=delay */
+	/* 0=none 1=cur 2=sel */
 	selstat = 0;
 
 	while(line != 0){
@@ -103,18 +103,18 @@ void selection_copy()
 				clipboard->next = cline;
 				clipboard = clipboard->next;
 			}
-
-			/* if delay was enabled stop copying */
-			if(selstat == 3) break;
 		}
 		
-		if(selstat == 1 && line == CF->sel) selstat = 3;
-		if(selstat == 2 && line == CF->cur->l) selstat = 3;
+		if(selstat == 1 && line == CF->sel) break;
+		if(selstat == 2 && line == CF->cur->l) break;
 		line = line->next;
 	}
 
 	/* rewind clipboard  */
 	while (clipboard->prev != 0) clipboard = clipboard->prev;
+
+	/* delete selection */
+	selection_del();
 }
 
 void selection_free_clipboard()
