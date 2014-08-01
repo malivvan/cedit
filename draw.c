@@ -111,6 +111,11 @@ void draw_buffer()
 	size_t skip;
 	size_t i;
 
+	short selstat;
+	
+	/* -2= done -1=delay 0=none 1=cur 2=sel */
+	selstat = 0;
+
 	line = CF->anc->l;
 	for(y = 0; line != 0 && y < h; y++){
 		x = 0;
@@ -118,6 +123,28 @@ void draw_buffer()
 
 		tpos = TABSIZE;
 		skip = CF->anc->p;
+
+		/* selection enable */
+		if(CF->sel != 0) {
+			/* first -> cur */
+			if(selstat == 0 && CF->cur->l == line){
+				BG = TB_REVERSE;
+				selstat = 1;
+			}
+			/* first -> sel */
+			if(selstat == 0 && CF->sel == line) {
+				BG = TB_REVERSE;
+				selstat = 2;
+			}
+			/* cur -> sel */
+			if(selstat == 1 && CF->sel == line) {
+				selstat = -1;
+			}
+			/* sel -> cur */
+			if(selstat == 2 && CF->cur->l == line) {
+				selstat = -1;
+			}
+		}
 
 		while(bcnt < line->blen){
 
@@ -131,7 +158,9 @@ void draw_buffer()
 
 			/* syntax coloring */
 			#ifdef SYNTAX
-			syntax_all(line, bcnt, len);
+			if(BG != TB_REVERSE) {
+				syntax_all(line, bcnt, len);
+			}
 			#endif
 
 			/* raise bcnt by len */
@@ -173,6 +202,13 @@ void draw_buffer()
 				x++;
 			}
 		}
+		/* disable selection */
+		if(CF->sel != 0 && selstat == -1){
+			BG = TB_BLACK;
+			selstat = -2;
+		}
+
+		/* set cursor */
 		if(CF->cur->l == line) {
 			tb_set_cursor(offset+misc_dispos(line,CF->cur->p)-CF->anc->p, y);
 		}

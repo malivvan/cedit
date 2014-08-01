@@ -50,9 +50,9 @@ Filepos *newFilepos()
 typedef struct File File;
 struct File {
 	Line *first;
+	Line *sel;
 	Filepos *cur;
 	Filepos *anc;
-	Filepos *sel;
 	File *next;
 	File *prev;
 	char *path;
@@ -63,11 +63,11 @@ File *newFile()
 	File *file;
 	file = malloc(sizeof(File));
 	file->first = newLine();
+	file->sel = 0;
 	file->cur = newFilepos();
 	file->cur->l = file->first;
 	file->anc = newFilepos();
 	file->anc->l = file->first;
-	file->sel = 0;
 	file->next = 0;
 	file->prev = 0;
 	file->path = 0;
