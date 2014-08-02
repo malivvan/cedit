@@ -88,6 +88,9 @@ int main(int argc, char *argv[])
 		} else {
 			if(ev.key == TB_KEY_CTRL_Y) { selection_new();   break;}
 		}
+		/////////////////////////// END/POS1 ///////////////////////////
+		if(ev.key == TB_KEY_HOME)   { core_pos1();               break;}
+		if(ev.key == TB_KEY_END)    { core_end();                break;}
 		///////////////////////// PAGE UP/DOWN /////////////////////////
 		if(ev.key == TB_KEY_PGUP)   { core_pageup();             break;}
 		if(ev.key == TB_KEY_PGDN)   { core_pagedown();           break;}
