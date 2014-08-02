@@ -156,6 +156,20 @@ void core_down()
 }
 
 /*
+ * cursor handling: pos1, end 
+ */
+void core_pos1()
+{
+	CF->cur->p = 0;
+	draw_all();
+}
+void core_end()
+{
+	CF->cur->p = CF->cur->l->clen;
+	draw_all();
+}
+
+/*
  * page handling: up and down
  */
 void core_pageup()
