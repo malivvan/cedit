@@ -57,13 +57,20 @@ int main(int argc, char *argv[])
 			}
 		} break;
 		} else {
-		////////////////////////////CLOSE///////////////////////////////
+		///////////////////////CLOSE/CANCEL/QUIT/////////////////////////
 		if(ev.key == TB_KEY_CTRL_C) {
-			file_close();
-			if (CF == 0) {
-				selection_free_clipboard();
-				tb_shutdown();
-				return 0;
+			/* delete selection */
+			if(CF->sel != 0){
+				selection_del();		
+
+			/* close file / quit cedit */
+			} else {
+				file_close();
+				if (CF == 0) {
+					selection_free_clipboard();
+					tb_shutdown();
+					return 0;
+				}
 			}
 			draw_all();
 			break;
@@ -77,7 +84,6 @@ int main(int argc, char *argv[])
 		if(ev.key == TB_KEY_CTRL_P) { selection_paste();         break;}
 		///////////////////////SELECTION KEYBINDS///////////////////////
 		if(CF->sel != 0){
-			if(ev.key == TB_KEY_ESC)    { selection_del();   break;}
 			if(ev.key == TB_KEY_CTRL_Y) { selection_copy();  break;}
 		} else {
 			if(ev.key == TB_KEY_CTRL_Y) { selection_new();   break;}
