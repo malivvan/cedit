@@ -1,10 +1,27 @@
 #include "cedit.h"
 
+
+/*
+ * matches line[cur+i] with full buffer
+ * always save to call - validates input
+ * returns 0 if no match was found and len if there was a match
+ */
+size_t match_line_buf(Line *l, size_t cur, char *buf)
+{
+	size_t len;
+	len = strlen(buf);
+	if((cur + len) <= l->blen){
+		return match_buf_buf(l->c, cur, buf, 0, len);
+	}
+	return 0;
+}
+
 /*
  * matches buf1[cur1+i] with buf2[cur2+i] i=0...len-1
  * does not care about lenght of buffer
+ * returns 0 of no match was found and len if there was a match
  */
-short match_buf(char *buf1, size_t cur1, char *buf2, size_t cur2, size_t len)
+size_t match_buf_buf(char *buf1, size_t cur1, char *buf2, size_t cur2, size_t len)
 {
 	size_t i;
 	for(i = 0; i < len; i++){
@@ -12,7 +29,7 @@ short match_buf(char *buf1, size_t cur1, char *buf2, size_t cur2, size_t len)
 			return 0;
 		}
 	}
-	return 1;
+	return len;
 }
 
 /*
