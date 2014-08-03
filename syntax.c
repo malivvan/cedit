@@ -11,8 +11,6 @@ static size_t BC_status = 0;
 int syntax_BC(Line *l, size_t bcnt, size_t len)
 {
 	size_t x;
-	size_t i;
-	size_t isBC;
 	char *ftype;
 
 	/* syntax highlighting depending on filetype */
@@ -23,7 +21,6 @@ int syntax_BC(Line *l, size_t bcnt, size_t len)
 
 	/* check every block comment delimiter */
 	for(x = 0; bc[x] != 0; x++){
-		isBC = 1;
 		/* closing braces */
 		if(x % 2 == 1 && BC_lock == 1){
 			delay = match_line_buf(l, bcnt, bc[x]);
@@ -47,9 +44,7 @@ int syntax_BC(Line *l, size_t bcnt, size_t len)
 void syntax_BC_open()
 {
 	Line *l;
-        size_t i;
         size_t x;
-        size_t isBC;
         size_t bcnt;
         int open;
         int close;
@@ -75,10 +70,8 @@ void syntax_BC_open()
 					if(x % 2 == 0) open++;
 				}
                         }
-                        /* raise bcnt */
                         bcnt += tb_utf8_char_length(l->c[bcnt]);
                 }
-                /* goto next line */
                 l = l->next;
         }
 
@@ -95,10 +88,8 @@ void syntax_BC_open()
  */
 int syntax_ILC(Line *l, size_t bcnt, size_t len)
 {
-	size_t i;
 	size_t x;
 	size_t d;
-	size_t isILC;
 
 	/* syntax highlighting depending on filetype */
 	char **ilc = 0;
@@ -108,22 +99,13 @@ int syntax_ILC(Line *l, size_t bcnt, size_t len)
 
 	/* check every inline comment delimiter */
 	for(x = 0; ilc[x] != 0; x++){
-		isILC = 1;
-		if(bcnt + strlen(ilc[x]) <= l->blen){
-			for(i = 0; i < strlen(ilc[x]); i++){
-				if(l->c[bcnt+i] != ilc[x][i]){
-					isILC = 0;
-					break;
-				}
-				if(i == strlen(ilc[x])-1 && isILC){
-					FG = SYNTAX_ILC;
-					for(d = 0; bcnt < l->blen; d++){
-					bcnt += tb_utf8_char_length(l->c[bcnt]);
-					}
-					delay = d;
-					return 1;
-				}
+		if(match_line_buf(l, bcnt, ilc[x]) > 0){
+			for(d = 0; bcnt < l->blen; d++){
+				bcnt += tb_utf8_char_length(l->c[bcnt]);
 			}
+			FG = SYNTAX_ILC;
+			delay = d;
+			return 1;
 		}
 	}
 	return 0;
@@ -202,10 +184,9 @@ int syntax_NUM(Line *l, size_t bcnt, size_t len)
  */
 int syntax_WORD(Line *l, size_t bcnt, size_t len)
 {
-	size_t i;
 	size_t x;
 	size_t r;
-	size_t isWord;
+	size_t i;
 
 	/* type will hold datatypes, res(erved) will hold reserved words and
 	   word will point to one of them */
@@ -225,25 +206,14 @@ int syntax_WORD(Line *l, size_t bcnt, size_t len)
 
 	/* detect words and highlight them if they match */
 	for(x = 0; word[x] != 0; x++){
-		isWord = 1;
-		if(bcnt + strlen(word[x]) <= l->blen){
-			for(i = 0; i < strlen(word[x]); i++){
-				if(l->c[bcnt+i] != word[x][i]){
-					isWord = 0;
-					break;
-				}
-				if(i == strlen(word[x])-1 && isWord){
-					if(bcnt!=0 &&
-					   !isSpecial(l->c[bcnt-1]))   return 0;
-					if(bcnt+i+1 < l->blen &&
-					   !isSpecial(l->c[bcnt+i+1])) return 0;
-
-					if(r == 0) FG = SYNTAX_TYPE;
-					if(r == 1) FG = SYNTAX_RES;
-					delay = i+1;
-					return 1;
-				}
-			}
+		delay = match_line_buf(l, bcnt, word[x]);
+		if(delay > 0){
+			i = strlen(word[x])-1;
+			if((bcnt+i+1 < l->blen && !isSpecial(l->c[bcnt+i+1])) ||
+			   (bcnt!=0 && !isSpecial(l->c[bcnt-1]))) return 0;
+			if(r == 0) FG = SYNTAX_TYPE;
+			if(r == 1) FG = SYNTAX_RES;
+			return 1;
 		}
 	}}
 	return 0;
