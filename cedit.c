@@ -7,7 +7,7 @@
 #include "cmd.c"
 #include "file.c"
 #include "dialog.c"
-#include "misc.c"
+#include "shared.c"
 #include "selection.c"
 #include "draw.c"
 #include "cedit.h"
@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
 		 if(ev.key == TB_KEY_ESC) {
 			/* delete selection */
 			if(CF->sel != 0){
-				selection_del();		
+				selection_del();
 
 			/* close file / quit cedit */
 			} else {

@@ -78,12 +78,13 @@ void syntax_reset();
 void syntax_all(Line *line, size_t bcnt, size_t len);
 
 /*
- * File:        misc.c
- * Description: helper functions
+ * File:        shared.c
+ * Description: function shared between other functions
  */
-size_t misc_utf8_bytepos(char *buf, size_t pos, size_t blen);
-size_t misc_dispos(Line *line, size_t pos);
-char *misc_filetype();
+short match_buf(char *buf1, size_t cur1, char *buf2, size_t cur2, size_t len);
+size_t utf8_bytepos(char *buf, size_t pos, size_t blen);
+size_t dispos(Line *line, size_t pos);
+char *getFiletype();
 size_t isNumber(char c);
 size_t isLetter(char c);
 size_t isSpecial(char c);

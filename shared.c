@@ -1,9 +1,24 @@
 #include "cedit.h"
 
 /*
+ * matches buf1[cur1+i] with buf2[cur2+i] i=0...len-1
+ * does not care about lenght of buffer
+ */
+short match_buf(char *buf1, size_t cur1, char *buf2, size_t cur2, size_t len)
+{
+	size_t i;
+	for(i = 0; i < len; i++){
+		if(buf1[cur1+i] != buf2[cur2+i]){
+			return 0;
+		}
+	}
+	return 1;
+}
+
+/*
  * calculates the byteposition of a single character in an utf-8 char array
  */
-size_t misc_utf8_bytepos(char *buf, size_t pos, size_t blen)
+size_t utf8_bytepos(char *buf, size_t pos, size_t blen)
 {
 	size_t i;
 	size_t bpos;
@@ -18,7 +33,7 @@ size_t misc_utf8_bytepos(char *buf, size_t pos, size_t blen)
 /*
  * calculates display position of position in a line
  */
-size_t misc_dispos(Line *line, size_t pos)
+size_t dispos(Line *line, size_t pos)
 {
 	size_t len;
 	size_t bcnt;
@@ -52,7 +67,7 @@ size_t misc_dispos(Line *line, size_t pos)
 /*
  * returns char array of 10 chars or less until a dot was found
  */
-char *misc_filetype()
+char *getFiletype()
 {
 	size_t i;
 	size_t len;

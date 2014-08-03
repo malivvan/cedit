@@ -44,7 +44,7 @@ void draw_ensure_viewport_h()
 	size_t vpos_cur;
 
 	/* get visual cursor position */
-	vpos_cur = misc_dispos(CF->cur->l,CF->cur->p);
+	vpos_cur = dispos(CF->cur->l,CF->cur->p);
 
 	/* move horizontal viewport anchor */
 	if(CF->anc->p > vpos_cur){
@@ -112,10 +112,10 @@ void draw_buffer()
 	size_t i;
 
 	short selstat;
-	
+
 	/* -2= done -1=delay 0=none 1=cur 2=sel */
 	selstat = selection_open();
-	if(selstat > 0){ 
+	if(selstat > 0){
 		FG = TB_BLACK;
 		BG = TB_WHITE;
 	}
@@ -217,7 +217,7 @@ void draw_buffer()
 
 		/* set cursor */
 		if(CF->cur->l == line) {
-			tb_set_cursor(offset+misc_dispos(line,CF->cur->p)-CF->anc->p, y);
+			tb_set_cursor(offset+dispos(line,CF->cur->p)-CF->anc->p, y);
 		}
 		line = line->next;
 	}
