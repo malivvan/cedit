@@ -210,7 +210,7 @@ void draw_buffer()
 		}
 		/* disable selection */
 		if((CF->sel != 0 && selstat == -1) || (y == h-1)){
-			FG = TB_WHITE;
+			FG = TB_WHITE | TB_BOLD;
 			BG = TB_BLACK;
 			selstat = -2;
 		}
