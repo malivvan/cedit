@@ -51,7 +51,7 @@ void file_open(char *path)
 
 	CF->path = malloc(strlen(path));
 	strncpy(CF->path, path, strlen(path));
-	CF->type = misc_filetype();
+	CF->type = getFiletype();
 
 	line = CF->first;
 	ch = fgetc(fp);
@@ -131,7 +131,7 @@ void file_save(char *path)
 	if(path != 0 && strlen(path) > 0){
 		CF->path = malloc(strlen(path));
 		strncpy(CF->path, path, strlen(path));
-		CF->type = misc_filetype();
+		CF->type = getFiletype();
 	}
 
 	if(CF->path == 0) {

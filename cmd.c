@@ -66,7 +66,7 @@ void cmd_input_add(uint32_t ch)
 	size_t bpos;
 
 	len = tb_utf8_unicode_to_char(buf, ch);
-	bpos = misc_utf8_bytepos(CMD->c, CMD->cur, CMD->blen);
+	bpos = utf8_bytepos(CMD->c, CMD->cur, CMD->blen);
 	cmd_ensure_cap(CMD->blen+len);
 
 	for(i = CMD->blen+len; i >= bpos+len; i--)  CMD->c[i] = CMD->c[i-len];
@@ -90,7 +90,7 @@ void cmd_input_del()
 	size_t len;
 	size_t bpos;
 
-	bpos = misc_utf8_bytepos(CMD->c, CMD->cur-1, CMD->blen);
+	bpos = utf8_bytepos(CMD->c, CMD->cur-1, CMD->blen);
 	len = tb_utf8_char_length(CMD->c[bpos]);
 
 	for(i = bpos; i < CMD->blen; i++) CMD->c[i] = CMD->c[i+len];
