@@ -26,33 +26,15 @@ int syntax_BC(Line *l, size_t bcnt, size_t len)
 		isBC = 1;
 		/* closing braces */
 		if(x % 2 == 1 && BC_lock == 1){
-			if(bcnt + strlen(bc[x]) <= l->blen){
-				for(i = 0; i < strlen(bc[x]); i++){
-					if(l->c[bcnt+i] != bc[x][i]){
-						isBC = 0;
-						break;
-					}
-					if(i == strlen(bc[x])-1 && isBC){
-						delay = strlen(bc[x]);
-						return 1;
-					}
-				}
-			}
+			delay = match_line_buf(l, bcnt, bc[x]);
+			if(delay > 0) return 1;
 		}
 		/* opening braces */
 		if(x % 2 == 0 && BC_lock == 0) {
-			if(bcnt + strlen(bc[x]) <= l->blen){
-				for(i = 0; i < strlen(bc[x]); i++){
-					if(l->c[bcnt+i] != bc[x][i]){
-						isBC = 0;
-						break;
-					}
-					if(i == strlen(bc[x])-1 && isBC){
-						FG = SYNTAX_BC;
-						BC_lock = 1;
-						return 1;
-					}
-				}
+			if(match_line_buf(l, bcnt, bc[x]) > 0){
+				FG = SYNTAX_BC;
+				BC_lock = 1;
+				return 1;
 			}
 		}
 	}
@@ -88,22 +70,15 @@ void syntax_BC_open()
                 bcnt = 0;
                 while(bcnt <= l->blen) {
                         for(x = 0; bc[x] != 0; x++){
-                                isBC = 1;
-                                for(i = 0; i < strlen(bc[x]); i++){
-                                        if(l->c[bcnt+i] != bc[x][i]){
-                                                isBC = 0;
-                                                break;
-                                        }
-                                        if(i == strlen(bc[x])-1 && isBC){
-                                                if(x % 2 == 1) close++;
-                                                if(x % 2 == 0) open++;
-                                        }
-                                }
+				if(match_line_buf(l, bcnt, bc[x]) > 0){
+					if(x % 2 == 1) close++;
+					if(x % 2 == 0) open++;
+				}
                         }
                         /* raise bcnt */
                         bcnt += tb_utf8_char_length(l->c[bcnt]);
                 }
-                /* raise number */
+                /* goto next line */
                 l = l->next;
         }
 

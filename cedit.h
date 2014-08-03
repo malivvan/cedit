@@ -81,7 +81,8 @@ void syntax_all(Line *line, size_t bcnt, size_t len);
  * File:        shared.c
  * Description: function shared between other functions
  */
-short match_buf(char *buf1, size_t cur1, char *buf2, size_t cur2, size_t len);
+size_t match_line_buf(Line *l, size_t cur, char *buf);
+size_t match_buf_buf(char *buf1, size_t cur1, char *buf2, size_t cur2, size_t len);
 size_t utf8_bytepos(char *buf, size_t pos, size_t blen);
 size_t dispos(Line *line, size_t pos);
 char *getFiletype();
