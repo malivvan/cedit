@@ -1,0 +1,44 @@
+A simple and minimalistic editor written in pure C.
+
+Goals:
+  * no external libs except termbox
+  * static binary
+
+Features:
+  * open, edit and save multiple files
+  * syntax highlighting
+  * line numbers
+  * selection based copy paste
+
+Building:
+  * make           : compiles a full version
+  * make lite      : compiles version without syntax highlighting
+
+Keybinds:
+  General:
+    <F1>...<F12>   : switch file
+    <CTRL><H>      : switch file left
+    <CTRL><L>      : switch file right
+
+  Write Mode:
+    <ESC>          : close file, quit
+    <CTRL><O>      : open file
+    <CTRL><S>      : save file
+    <CTRL><N>      : new file
+    <CTRL><D>	   : delete line
+    <CTRL><C>      : enter selection mode
+    <CTRL><V>      : paste clipboard
+    <ARROWS>       : move within editor
+    <PAGE UP>      : move cursor one screen up
+    <PAGE DOWN>    : move cursor one screen down
+    <HOME>         : move cursor to position 1
+    <END>          : move cursor to end of line
+
+  Command Mode:
+    <ESC>          : return to Write Mode
+    <ARROWS>       : move cursor left and right
+    <RETURN>       : execute command
+
+  Selection Mode:
+    <ESC>          : return to Write Mode
+    <CTRL><C>      : copy selection to clipboard
